@@ -18,9 +18,9 @@ def all(db: Session = Depends(dataBase), current_user: schemas.User = Depends(oa
     return pot.getPots(db, current_user)
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED,)
-def create(request: schemasPot.Pot, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.createPot(request, db, current_user)
+@router.post('/{potId}', status_code=status.HTTP_201_CREATED,)
+def create(potId: int, request: schemasPot.PotToModify, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    return pot.createPot(potId, request, db, current_user)
 
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)

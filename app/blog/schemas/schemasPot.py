@@ -7,10 +7,10 @@ class Pot(BaseModel):
     xgrowKey: str
     # setObjectName = Column(String)
     potID: int
-    isAvailable: str  # bool
+    isAvailable: bool  # bool
     pumpWorkingTimeLimit: int
-    autoWateringFunction: str  # bool
-    pumpWorkStatus: str  # bool
+    autoWateringFunction: bool  # bool
+    pumpWorkStatus: bool  # bool
     # lastWateredCycleTime = datetime.now()
     sensorOutput: int
     minimalHumidity: int
@@ -25,10 +25,10 @@ class PotToModify(BaseModel):
     # xgrowKey: str
     # setObjectName = Column(String)
     # potID: int
-    isAvailable: str  # bool
+    isAvailable: bool  # bool
     pumpWorkingTimeLimit: int
-    autoWateringFunction: str  # bool
-    pumpWorkStatus: str  # bool
+    autoWateringFunction: bool  # bool
+    pumpWorkStatus: bool  # bool
     # lastWateredCycleTime = datetime.now()
     sensorOutput: int
     minimalHumidity: int
@@ -43,10 +43,10 @@ class PotToShow(BaseModel):
     # xgrowKey: str
     # setObjectName = Column(String)
     potID: int
-    isAvailable: str  # bool
+    isAvailable: bool  # bool
     pumpWorkingTimeLimit: int
-    autoWateringFunction: str  # bool
-    pumpWorkStatus: str  # bool
+    autoWateringFunction: bool  # bool
+    pumpWorkStatus: bool  # bool
     # lastWateredCycleTime = datetime.now()
     sensorOutput: int
     minimalHumidity: int

@@ -34,19 +34,25 @@ def getPots(db: Session, currentUser: schemas.User):
         potList.append(pot)
     return potList
 
-def createPot(request: schemasPot.Pot, db: Session, currentUser: schemas.User):
+def createPot(potId: int, request: schemasPot.PotToModify, db: Session, currentUser: schemas.User):
 
     #checking currentUser is Device or User:
-    xgrowKey: str
     if currentUser.userType.__contains__('user'):
         xgrowKey = currentUser.xgrowKey
+        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId).first()
     else:
         xgrowKey = currentUser.name
+        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name, models.Pot.potID == potId).first()
+
+    #checking if pot already exists
+    if pot:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Pot with the id {potId} is already exists")
 
     newPot = models.Pot(
         xgrowKey= xgrowKey,
         #setObjectName = Column(String)
-        potID= request.potID,
+        potID= potId,
         isAvailable= request.isAvailable,
         pumpWorkingTimeLimit= request.pumpWorkingTimeLimit,
         autoWateringFunction= request.autoWateringFunction,
@@ -65,8 +71,14 @@ def createPot(request: schemasPot.Pot, db: Session, currentUser: schemas.User):
     db.refresh(newPot)
     return newPot
 
-def getPot(id: int, db: Session, currentUser: schemas.User):
-    pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == id).first()
+def getPot(potId: int, db: Session, currentUser: schemas.User):
+
+    #checking currentUser is Device or User:
+    if currentUser.userType.__contains__('user'):
+        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId).first()
+    else:
+        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name, models.Pot.potID == potId).first()
+
 
     pot = schemasPot.Pot(
         xgrowKey= pot.xgrowKey,
@@ -87,15 +99,20 @@ def getPot(id: int, db: Session, currentUser: schemas.User):
     )
     if not pot:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Pot with the id {id} is not available")
+                            detail=f"Pot with the id {potId} is not available")
     return pot
 
 def updatePot(potId: int, request: schemasPot.PotToModify, db: Session, currentUser: schemas.User):
-    pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId)
+
+    #checking currentUser is Device or User:
+    if currentUser.userType.__contains__('user'):
+        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId)
+    else:
+        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name, models.Pot.potID == potId)
 
     if not pot.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Blog with id {id} not found")
+                            detail=f"Pot with id {potId} not found")
 
     pot.update(request.dict())
     db.commit()

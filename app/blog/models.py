@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Enum
 from app.blog.database import Base
 from sqlalchemy.orm import relationship
 
@@ -11,10 +11,10 @@ class Pot(Base):
     xgrowKey = Column(String)
     #setObjectName = Column(String)
     potID = Column(Integer)
-    isAvailable = Column(String) # bool
+    isAvailable = Column(Boolean, default=False) # bool
     pumpWorkingTimeLimit = Column(Integer)
-    autoWateringFunction = Column(String) # bool
-    pumpWorkStatus = Column(String) # bool
+    autoWateringFunction = Column(Boolean, default=False) # bool
+    pumpWorkStatus = Column(Boolean, default=False) # bool
     #lastWateredCycleTime = datetime.now()
     sensorOutput = Column(Integer)
     minimalHumidity = Column(Integer)
@@ -24,7 +24,20 @@ class Pot(Base):
     wateringCycleTimeInHour = Column(Integer)
     manualWateredInSecond = Column(Integer)
 
+class Fan(Base):
+    __tablename__ = 'fan'
 
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    fanId = Column(Integer)
+    isAvailable = Column(Boolean, default=False)
+    isWorked = Column(Boolean, default=False)
+    normalMode = Column(Boolean, default=False)
+    coldMode = Column(Boolean, default=False)
+    hotMode = Column(Boolean, default=False)
+    tempMax = Column(Integer)
+    tempMin = Column(Integer)
+    temperatureStatus = Column(String) #ENUM <=========
 
 class Blog(Base):
     __tablename__ = 'blogs'
