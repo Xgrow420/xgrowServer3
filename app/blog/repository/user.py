@@ -12,7 +12,7 @@ def createUser(request: schemas.User, db: Session):
 
         #====== Device profile
         new_device = models.User(
-            name=request.xgrowKey, xgrowKey=request.name, password=Hash.bcrypt(request.password), userType="device")
+            name=request.xgrowKey, xgrowKey=request.name, password=Hash.bcrypt(request.password), userType=False)
         db.add(new_device)
         db.commit()
         db.refresh(new_device)
@@ -20,7 +20,7 @@ def createUser(request: schemas.User, db: Session):
 
         # ====== User profile
         new_user = models.User(
-            name=request.name, xgrowKey=request.xgrowKey, password=Hash.bcrypt(request.password), userType="user")
+            name=request.name, xgrowKey=request.xgrowKey, password=Hash.bcrypt(request.password), userType=True)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)

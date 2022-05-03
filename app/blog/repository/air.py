@@ -1,38 +1,19 @@
 from sqlalchemy.orm import Session
 
+from app.blog.xgrow import XgrowInstance
 from app.blog import models
-from app.blog.schemas import schemas, schemasPot
+from app.blog.schemas import schemas, schemasPot, schemasAir
 from fastapi import HTTPException, status
 
-def getPots(db: Session, currentUser: schemas.User):
+from app.blog.xgrow.Climate import Climate
 
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        pots = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey).all()
-    else:
-        pots = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name).all()
 
-    potList = []
-    for pot in pots:
-        pot = schemasPot.Pot(
-            xgrowKey= pot.xgrowKey,
-            #setObjectName = Column(String)
-            potID= pot.potID,
-            isAvailable= pot.isAvailable,
-            pumpWorkingTimeLimit= pot.pumpWorkingTimeLimit,
-            autoWateringFunction= pot.autoWateringFunction,
-            pumpWorkStatus= pot.pumpWorkStatus,
-            #lastWateredCycleTime = datetime.now()
-            sensorOutput= pot.sensorOutput,
-            minimalHumidity= pot.minimalHumidity,
-            maxSensorHumidityOutput= pot.maxSensorHumidityOutput,
-            minSensorHumidityOutput= pot.minSensorHumidityOutput,
-            pumpWorkingTime= pot.pumpWorkingTime,
-            wateringCycleTimeInHour= pot.wateringCycleTimeInHour,
-            manualWateredInSecond= pot.manualWateredInSecond
-        )
-        potList.append(pot)
-    return potList
+def getAirObject(currentUser: schemas.User):
+
+    xgrow: Climate = XgrowInstance.getXgrowInstnce().getXgrowObject(currentUser)
+    schema: schemasAir = xgrow.getAir().getObjectSchema()
+    print(xgrow.xgrowKey)
+    return schema
 
 def createPot(potId: int, request: schemasPot.PotToModify, db: Session, currentUser: schemas.User):
 

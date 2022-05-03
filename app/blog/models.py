@@ -1,9 +1,23 @@
 from typing import List
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Enum, ARRAY
 from app.blog.database import Base
 from sqlalchemy.orm import relationship
 
 #DATABASE MODEL
+
+class Air(Base):
+    __tablename__ = 'air'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+
+    airTemperature = Column(Integer)
+    airHumidity = Column(Integer)
+
+    airTemperatureLogList = Column(String)
+    airHumidityLogList = Column(String)
+
+
 class Pot(Base):
     __tablename__ = 'pot'
 
@@ -56,7 +70,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     xgrowKey = Column(String)
-    userType = Column(String)
+    userType = Column(Boolean)
     password = Column(String)
 
     #PotList = Column(List)

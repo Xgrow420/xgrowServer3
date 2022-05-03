@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class User(BaseModel):
     name: str
     xgrowKey: str
-    userType: str
+    userType: bool
     password: str
 
     class Config():
@@ -18,14 +18,19 @@ class Device(User):
 
 class ShowDevice(BaseModel):
     name: str
-    userType: str
+    userType: bool
     xgrowKey: str
+
+    class Config():
+        orm_mode = True
 
 class ShowUser(BaseModel):
     name: str
-    userType: str
+    userType: bool
     xgrowKey: str
 
+    class Config():
+        orm_mode = True
 
 class Login(BaseModel):
     username: str

@@ -4,6 +4,8 @@ from app.blog import schemas, database, models, token
 from app.blog.hashing import Hash
 from sqlalchemy.orm import Session
 
+from app.blog.xgrow import XgrowInstance
+
 router = APIRouter(tags=['Authentication'])
 
 

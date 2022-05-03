@@ -7,7 +7,7 @@ from fastapi import HTTPException, status
 def getFans(db: Session, currentUser: schemas.User):
 
     #checking currentUser is Device or User:
-    if currentUser.userType.__contains__('user'):
+    if currentUser.userType:
         fans = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey).all()
     else:
         fans = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.name).all()
@@ -32,7 +32,7 @@ def getFans(db: Session, currentUser: schemas.User):
 def createFan(fanId: int, request: schemasFan.FanToModify, db: Session, currentUser: schemas.User):
 
     #checking currentUser is Device or User:
-    if currentUser.userType.__contains__('user'):
+    if currentUser.userType:
         xgrowKey = currentUser.xgrowKey
         fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey, models.Fan.fanId == fanId).first()
     else:
@@ -65,7 +65,7 @@ def createFan(fanId: int, request: schemasFan.FanToModify, db: Session, currentU
 def getFan(fanId: int, db: Session, currentUser: schemas.User):
 
     #checking currentUser is Device or User:
-    if currentUser.userType.__contains__('user'):
+    if currentUser.userType:
         fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey, models.Fan.fanId == fanId).first()
     else:
         fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.name, models.Fan.fanId == fanId).first()
@@ -90,7 +90,7 @@ def getFan(fanId: int, db: Session, currentUser: schemas.User):
 def updateFan(fanId: int, request: schemasFan.FanToModify, db: Session, currentUser: schemas.User):
 
     #checking currentUser is Device or User:
-    if currentUser.userType.__contains__('user'):
+    if currentUser.userType:
         fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey, models.Fan.fanId == fanId)
     else:
         fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.name, models.Fan.fanId == fanId)
