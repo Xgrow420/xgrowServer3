@@ -4,30 +4,30 @@ from app.blog import models
 from app.blog.schemas import schemas, schemasFan
 from fastapi import HTTPException, status
 
-def getFans(db: Session, currentUser: schemas.User):
+from app.blog.xgrow.Climate import Climate
+from app.blog.xgrow import XgrowInstance
 
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        fans = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey).all()
-    else:
-        fans = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.name).all()
 
-    fanList = []
-    for fan in fans:
-        fan = schemasFan.Fan(
-            xgrowKey= fan.xgrowKey,
-            fanId= fan.fanId,
-            isAvailable= fan.isAvailable,
-            isWorked= fan.isWorked,
-            normalMode= fan.normalMode,
-            coldMode= fan.coldMode,
-            hotMode= fan.hotMode,
-            tempMax= fan.tempMax,
-            tempMin= fan.tempMin,
-            temperatureStatus= fan.temperatureStatus  # ENUM <=========
-        )
-        fanList.append(fan)
-    return fanList
+def getFans(currentUser: schemas.User):
+
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
+    schemasList = []
+    for fan in xgrow.getFanList():
+        schemasList.append(fan.getObjectSchema())
+
+    return schemasList
+
+
+def getFan(fanSlot: int, currentUser: schemas.User):
+
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
+    return xgrow.getFanList().__getitem__(fanSlot - 1).getObjectSchema()
+
+
+def setFanObject(request: schemasFan.FanToModify, currentUser: schemas.User):
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
+    xgrow.getFanList().__getitem__(request.fanId - 1).saveObjectFromSchema(request)
+
 
 def createFan(fanId: int, request: schemasFan.FanToModify, db: Session, currentUser: schemas.User):
 
@@ -62,30 +62,6 @@ def createFan(fanId: int, request: schemasFan.FanToModify, db: Session, currentU
     db.refresh(newFan)
     return newFan
 
-def getFan(fanId: int, db: Session, currentUser: schemas.User):
-
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey, models.Fan.fanId == fanId).first()
-    else:
-        fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.name, models.Fan.fanId == fanId).first()
-
-    fan = schemasFan.Fan(
-        xgrowKey=fan.xgrowKey,
-        fanId=fan.fanId,
-        isAvailable=fan.isAvailable,
-        isWorked=fan.isWorked,
-        normalMode=fan.normalMode,
-        coldMode=fan.coldMode,
-        hotMode=fan.hotMode,
-        tempMax=fan.tempMax,
-        tempMin=fan.tempMin,
-        temperatureStatus=fan.temperatureStatus  # ENUM <=========
-    )
-    if not fan:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Fan with the id {fanId} is not available")
-    return fan
 
 def updateFan(fanId: int, request: schemasFan.FanToModify, db: Session, currentUser: schemas.User):
 

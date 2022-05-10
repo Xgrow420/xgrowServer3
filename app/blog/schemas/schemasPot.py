@@ -20,11 +20,14 @@ class Pot(BaseModel):
     wateringCycleTimeInHour: int
     manualWateredInSecond: int
 
+    class Config():
+        orm_mode = True
+
 class PotToModify(BaseModel):
 
     # xgrowKey: str
     # setObjectName = Column(String)
-    # potID: int
+    potID: int
     isAvailable: bool  # bool
     pumpWorkingTimeLimit: int
     autoWateringFunction: bool  # bool
@@ -37,6 +40,9 @@ class PotToModify(BaseModel):
     pumpWorkingTime: int
     wateringCycleTimeInHour: int
     manualWateredInSecond: int
+
+    class Config():
+        orm_mode = True
 
 class PotToShow(BaseModel):
 

@@ -1,16 +1,18 @@
 from app.blog.xgrow.fan.FanStatus import TemperatureStatus
 
+from app.blog.schemas.schemasFan import FanToModify
+
+
 class Fan():
     ''' All fan variable & method '''
 
     def __init__(self, fan_id):
-        super().__init__()
 
-        #self.setNonSaveObject(['_Fan__air'])
-        #self.setObjectName(f"Fan:{fan_id}")
+        # self.setNonSaveObject(['_Fan__air'])
+        # self.setObjectName(f"Fan:{fan_id}")
 
-        #self.__air = air
-        #self.__gpio = gpio
+        # self.__air = air
+        # self.__gpio = gpio
 
         self.xgrowKey = ''
 
@@ -29,9 +31,8 @@ class Fan():
         self.tempRangeMax = 50
         self.tempRangeMin = 5
 
-
-    #@classmethod
-    #def fromDTO(cls, fanDTO):
+    # @classmethod
+    # def fromDTO(cls, fanDTO):
     #    return cls(fanDTO.fan_id)
 
     def getFanID(self):
@@ -42,7 +43,6 @@ class Fan():
 
     def setStatus(self, status: TemperatureStatus):
         self.temperatureStatus = status
-
 
     def isWorked(self):
         '''TO DO add if statement: GPIO fan-pin read'''
@@ -76,7 +76,7 @@ class Fan():
     def setHotWorkMode(self, bolean: bool):
         self.hotMode = bolean
 
-    #def fanWorkUpdate(self):
+    # def fanWorkUpdate(self):
     #    if self.__isWorked == True:
     #        '''TO DO add GPIO pinout run'''
     #        print(f"fan work mode: {self.__isWorked}")
@@ -86,15 +86,17 @@ class Fan():
 
     def getTempMax(self):
         return self.tempMax
+
     def setTempMax(self):
         return self.tempMax
 
     def getTempMin(self):
         return self.tempMin
+
     def setTempMin(self):
         return self.tempMin
 
-    #def getFanTemperatureStatus(self):
+    # def getFanTemperatureStatus(self):
 
     #    airTemperature = self.__air.getTemperatureAverage()
 
@@ -108,7 +110,6 @@ class Fan():
     #        self.__temperatureStatus = TemperatureStatus.NORMAL
 
     #    return self.__temperatureStatus
-
 
     def addToTempMax(self, value):
 
@@ -137,3 +138,27 @@ class Fan():
             self.tempMin -= value
         else:
             return Exception
+
+    def getObjectSchema(self):
+        return FanToModify(fanId=self.fanId,
+                           isAvailable=self.isAvailable,
+                           isWorked=self.isWorked,
+                           normalMode=self.normalMode,
+                           coldMode=self.coldMode,
+                           hotMode=self.hotMode,
+                           tempMax=self.tempMax,
+                           tempMin=self.tempMin,
+                           temperatureStatus=self.temperatureStatus,
+                           )
+
+    def saveObjectFromSchema(self, schema: FanToModify):
+        self.isAvailable = schema.isAvailable
+        self.isWorked = schema.isWorked
+        self.normalMode = schema.normalMode
+        self.coldMode = schema.coldMode
+        self.hotMode = schema.hotMode
+
+        self.tempMax = schema.tempMax
+        self.tempMin = schema.tempMin
+
+        self.temperatureStatus = schema.temperatureStatus

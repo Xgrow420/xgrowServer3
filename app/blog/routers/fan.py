@@ -13,9 +13,17 @@ router = APIRouter(
 dataBase = database.getDataBase
 
 
-@router.get('/', response_model=List[schemasFan.Fan])
-def all(db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return fan.getFans(db, current_user)
+@router.get('/', response_model=List[schemasFan.FanToModify])
+def getAllFans(currentUser: schemas.User = Depends(oauth2.get_current_user)):
+    return fan.getFans(currentUser)
+
+@router.get('/{fanSlot}', response_model=schemasFan.FanToModify)
+def getFan(fanSlot: int, currentUser: schemas.User = Depends(oauth2.get_current_user)):
+    return fan.getFan(fanSlot, currentUser)
+
+@router.post('/', status_code=status.HTTP_201_CREATED)
+def setFanObject(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.get_current_user)):
+    fan.setFanObject(request, currentUser)
 
 
 @router.post('/{fanId}', status_code=status.HTTP_201_CREATED,)

@@ -14,9 +14,12 @@ dataBase = database.getDataBase
 
 
 @router.get('/', response_model=schemasAir.AirToModify)
-def all(current_user: schemas.User = Depends(oauth2.get_current_user)):
+def getAirObject(current_user: schemas.User = Depends(oauth2.get_current_user)):
     return air.getAirObject(current_user)
 
+@router.post('/', status_code=status.HTTP_201_CREATED)
+def setAirObject(request: schemasAir.AirToModify, currentUser: schemas.User = Depends(oauth2.get_current_user)):
+    air.setAirObject(request, currentUser)
 
 #@router.post('/{potId}', status_code=status.HTTP_201_CREATED,)
 #def create(potId: int, request: schemasPot.PotToModify, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):

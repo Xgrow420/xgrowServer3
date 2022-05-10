@@ -4,35 +4,30 @@ from app.blog import models
 from app.blog.schemas import schemas, schemasPot
 from fastapi import HTTPException, status
 
-def getPots(db: Session, currentUser: schemas.User):
+from app.blog.xgrow import XgrowInstance
+from app.blog.xgrow.Climate import Climate
 
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        pots = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey).all()
-    else:
-        pots = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name).all()
 
-    potList = []
-    for pot in pots:
-        pot = schemasPot.Pot(
-            xgrowKey= pot.xgrowKey,
-            #setObjectName = Column(String)
-            potID= pot.potID,
-            isAvailable= pot.isAvailable,
-            pumpWorkingTimeLimit= pot.pumpWorkingTimeLimit,
-            autoWateringFunction= pot.autoWateringFunction,
-            pumpWorkStatus= pot.pumpWorkStatus,
-            #lastWateredCycleTime = datetime.now()
-            sensorOutput= pot.sensorOutput,
-            minimalHumidity= pot.minimalHumidity,
-            maxSensorHumidityOutput= pot.maxSensorHumidityOutput,
-            minSensorHumidityOutput= pot.minSensorHumidityOutput,
-            pumpWorkingTime= pot.pumpWorkingTime,
-            wateringCycleTimeInHour= pot.wateringCycleTimeInHour,
-            manualWateredInSecond= pot.manualWateredInSecond
-        )
-        potList.append(pot)
-    return potList
+def getPots(currentUser: schemas.User):
+
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
+    schemasList = []
+    for pot in xgrow.getPotList():
+        schemasList.append(pot.getObjectSchema())
+
+    return schemasList
+
+
+def getPot(potSlot: int, currentUser: schemas.User):
+
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
+    return xgrow.getPotList().__getitem__(potSlot - 1).getObjectSchema()
+
+
+def setPotObject(request: schemasPot.PotToModify, currentUser: schemas.User):
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
+    xgrow.getPotList().__getitem__(request.potID - 1).saveObjectFromSchema(request)
+
 
 def createPot(potId: int, request: schemasPot.PotToModify, db: Session, currentUser: schemas.User):
 
@@ -70,37 +65,6 @@ def createPot(potId: int, request: schemasPot.PotToModify, db: Session, currentU
     db.commit()
     db.refresh(newPot)
     return newPot
-
-def getPot(potId: int, db: Session, currentUser: schemas.User):
-
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId).first()
-    else:
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name, models.Pot.potID == potId).first()
-
-
-    pot = schemasPot.Pot(
-        xgrowKey= pot.xgrowKey,
-        #setObjectName = Column(String)
-        potID= pot.potID,
-        isAvailable= pot.isAvailable,
-        pumpWorkingTimeLimit= pot.pumpWorkingTimeLimit,
-        autoWateringFunction= pot.autoWateringFunction,
-        pumpWorkStatus= pot.pumpWorkStatus,
-        #lastWateredCycleTime = datetime.now()
-        sensorOutput= pot.sensorOutput,
-        minimalHumidity= pot.minimalHumidity,
-        maxSensorHumidityOutput= pot.maxSensorHumidityOutput,
-        minSensorHumidityOutput= pot.minSensorHumidityOutput,
-        pumpWorkingTime= pot.pumpWorkingTime,
-        wateringCycleTimeInHour= pot.wateringCycleTimeInHour,
-        manualWateredInSecond= pot.manualWateredInSecond
-    )
-    if not pot:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Pot with the id {potId} is not available")
-    return pot
 
 def updatePot(potId: int, request: schemasPot.PotToModify, db: Session, currentUser: schemas.User):
 

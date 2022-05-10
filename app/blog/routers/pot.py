@@ -13,14 +13,17 @@ router = APIRouter(
 dataBase = database.getDataBase
 
 
-@router.get('/', response_model=List[schemasPot.Pot])
-def all(db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.getPots(db, current_user)
+@router.get('/', response_model=List[schemasPot.PotToModify])
+def getAllPots(current_user: schemas.User = Depends(oauth2.get_current_user)):
+    return pot.getPots(current_user)
 
+@router.get('/{potId}', response_model=schemasPot.PotToModify)
+def getPot(potId: int, current_user: schemas.User = Depends(oauth2.get_current_user)):
+    return pot.getPot(potId, current_user)
 
-@router.post('/{potId}', status_code=status.HTTP_201_CREATED,)
-def create(potId: int, request: schemasPot.PotToModify, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.createPot(potId, request, db, current_user)
+@router.post('/', response_model=schemasPot.PotToModify)
+def setPotObject(request: schemasPot.PotToModify, current_user: schemas.User = Depends(oauth2.get_current_user)):
+    return pot.setPotObject(request, current_user)
 
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)

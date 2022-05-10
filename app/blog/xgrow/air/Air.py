@@ -76,16 +76,15 @@ class Air():
 
     '''Do sprawdzenia '''
     def getObjectSchema(self):
-        schema = AirToModifySchema(airHumidity= self.airHumidity,
+        return AirToModifySchema(airHumidity= self.airHumidity,
                            airTemperature= self.airTemperature,
                            airHumidityLogList= utils.convertListToString(self.airHumidityLogList),
                            airTemperatureLogList= utils.convertListToString(self.airTemperatureLogList)
                            )
-        return schema
 
     def saveObjectFromSchema(self, schema: AirToModifySchema):
         self.airHumidity = schema.airHumidity
         self.airTemperature = schema.airTemperature
         self.airTemperatureLogList = utils.convertStringToList(schema.airTemperatureLogList)
-        self.airTemperatureLogList = utils.convertStringToList(schema.airHumidityLogList)
+        self.airHumidityLogList = utils.convertStringToList(schema.airHumidityLogList)
 

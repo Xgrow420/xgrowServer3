@@ -1,3 +1,5 @@
+from app.blog.schemas.schemasSlot import SlotToModify, TimerToModify, TemperatureMaxToModify, TemperatureMinToModify, \
+    HumidityMaxToModify, HumidityMinToModify
 from app.blog.xgrow.slot.SlotFunction import SlotFunction
 
 
@@ -6,9 +8,10 @@ class SlotObject():
     def __init__(self, slotID):
         super().__init__()
 
-        #self.setObjectName(f"Slot:{slotID}")
+        # self.setObjectName(f"Slot:{slotID}")
 
-        #self.__gpio = gpio
+        # self.__gpio = gpio
+        self.xgrowKey = ''
 
         self.__slotId = slotID
         self.__slotFunction = SlotFunction.TIMER
@@ -20,7 +23,6 @@ class SlotObject():
         self.__temperatureMin = TemperatureMin(slotID)
         self.__humidityMax = HumidityMax(slotID)
         self.__humidityMin = HumidityMin(slotID)
-
 
     def getSlotID(self):
         return self.__slotId
@@ -58,14 +60,27 @@ class SlotObject():
     def getMinHumidityObject(self):
         return self.__humidityMin
 
+    def getObjectSchema(self):
+        return SlotToModify(slotId=self.__slotId,
+                            slotFunction=self.__slotFunction,
+                            slotWorkMode=self.__slotWorkMode,
+                            workReversal=self.__workReversal
+                            )
+
+    def saveObjectFromSchema(self, schema: SlotToModify):
+        self.__slotId = schema.slotId
+        self.__slotFunction = schema.slotFunction
+        self.__slotWorkMode = schema.slotWorkMode
+        self.__workReversal = schema.workReversal
 
 
 class Timer():
     def __init__(self, slotID):
         super().__init__()
 
-        #self.setObjectName(f"Timer:{slotID}")
-
+        # self.setObjectName(f"Timer:{slotID}")
+        self.xgrowKey = ''
+        self.__slotId = slotID
         self.__hourStart = 12
         self.__minuteStart = 56
         self.__hourStop = 13
@@ -107,13 +122,30 @@ class Timer():
         if integer > 0 & integer <= 24:
             self.__lightCycle = integer
 
+    def getObjectSchema(self):
+        return TimerToModify(slotId=self.__slotId,
+                             hourStart=self.__hourStart,
+                             minuteStart=self.__minuteStart,
+                             hourStop=self.__hourStop,
+                             minuteStop=self.__minuteStop,
+                             lightCycle=self.__lightCycle
+                             )
+
+    def saveObjectFromSchema(self, schema: TimerToModify):
+        self.__slotId = schema.slotId
+        self.__hourStart = schema.hourStart
+        self.__minuteStart = schema.minuteStart
+        self.__hourStop = schema.hourStop
+        self.__minuteStop = schema.minuteStop
+        self.__lightCycle = schema.lightCycle
+
 
 class TemperatureMax():
     def __init__(self, slotID):
         super().__init__()
 
-        #self.setObjectName(f"TemperatureMax:{slotID}")
-
+        # self.setObjectName(f"TemperatureMax:{slotID}")
+        self.xgrowKey = ''
         self.__tempMax = 30
         self.__compensation = 0
         self.__workFlag = False
@@ -137,13 +169,25 @@ class TemperatureMax():
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
 
+    def getObjectSchema(self):
+        return TemperatureMaxToModify(tempMax=self.__tempMax,
+                                      compensation=self.__compensation,
+                                      workFlag=self.__workFlag
+                                      )
+
+    def saveObjectFromSchema(self, schema: TemperatureMaxToModify):
+        self.__tempMax = schema.tempMax
+        self.__compensation = schema.compensation
+        self.__workFlag = schema.workFlag
+
+
 
 class TemperatureMin():
     def __init__(self, slotID):
         super().__init__()
 
-        #self.setObjectName(f"TemperatureMin:{slotID}")
-
+        # self.setObjectName(f"TemperatureMin:{slotID}")
+        self.xgrowKey = ''
         self.__tempMin = 15
         self.__compensation = 0
         self.__workFlag = False
@@ -168,13 +212,21 @@ class TemperatureMin():
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
 
+    def getObjectSchema(self):
+        return TemperatureMinToModify(
+        )
+
+    def saveObjectFromSchema(self, schema: TemperatureMinToModify):
+
+        pass
+
 
 class HumidityMax():
     def __init__(self, slotID):
         super().__init__()
 
-        #self.setObjectName(f"HumidityMax:{slotID}")
-
+        # self.setObjectName(f"HumidityMax:{slotID}")
+        self.xgrowKey = ''
         self.__humidityMax = 85
         self.__compensation = 0
         self.__workFlag = False
@@ -199,13 +251,20 @@ class HumidityMax():
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
 
+    def getObjectSchema(self):
+        return HumidityMaxToModify(
+        )
+
+    def saveObjectFromSchema(self, schema: HumidityMaxToModify):
+        pass
+
 
 class HumidityMin():
     def __init__(self, slotID):
         super().__init__()
 
-        #self.setObjectName(f"HumidityMin:{slotID}")
-
+        # self.setObjectName(f"HumidityMin:{slotID}")
+        self.xgrowKey = ''
         self.__humidityMin = 25
         self.__compensation = 0
         self.__workFlag = False
@@ -229,3 +288,10 @@ class HumidityMin():
 
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
+
+    def getObjectSchema(self):
+        return HumidityMinToModify(
+        )
+
+    def saveObjectFromSchema(self, schema: HumidityMinToModify):
+        pass

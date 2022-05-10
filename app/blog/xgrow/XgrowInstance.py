@@ -2,6 +2,8 @@ from app.blog.schemas import schemas
 from app.blog.xgrow.Climate import Climate
 
 
+'''TO DO singleton'''
+
 class XgrowInstance():
     def __init__(self):
 
@@ -30,11 +32,9 @@ class XgrowInstance():
             self.createXgrowObject(currentUser)
             return self.getXgrowObject(currentUser)
 
-
-
 xgrowInstnce = XgrowInstance()
 
-def getXgrowInstnce():
-    return xgrowInstnce
+def getXgrowObject(currentUser: schemas.User):
+    return xgrowInstnce.getXgrowObject(currentUser)
 
 

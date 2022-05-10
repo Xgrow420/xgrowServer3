@@ -51,7 +51,7 @@ class Fan(Base):
     hotMode = Column(Boolean, default=False)
     tempMax = Column(Integer)
     tempMin = Column(Integer)
-    temperatureStatus = Column(String) #ENUM <=========
+    temperatureStatus = Column(Enum) #ENUM <=========
 
 class Blog(Base):
     __tablename__ = 'blogs'
@@ -77,4 +77,66 @@ class User(Base):
 
 
     blogs = relationship('Blog', back_populates="creator")
+
+class Slot(Base):
+    __tablename__ = 'slot'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    slotId = Column(Integer)
+    slotFunction = Column(String) #SlotFunction.TIMER  ENUM TO DO
+    slotWorkMode = Column(Boolean)
+    workReversal = Column(Boolean)
+
+class Timer(Base):
+    __tablename__ = 'timer'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    slotId = Column(Integer)
+    hourStart = Column(Integer)
+    minuteStart = Column(Integer)
+    hourStop = Column(Integer)
+    minuteStop = Column(Integer)
+    lightCycle = Column(Integer)
+
+class TemperatureMax(Base):
+    __tablename__ = 'temperaturemax'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    slotId = Column(Integer)
+    tempMax = Column(Integer)
+    compensation = Column(Integer)
+    workFlag = Column(Boolean)
+
+class TemperatureMin(Base):
+    __tablename__ = 'temperaturemin'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    slotId = Column(Integer)
+    tempMin = Column(Integer)
+    compensation = Column(Integer)
+    workFlag = Column(Boolean)
+
+class HumidityMax(Base):
+    __tablename__ = 'humiditymax'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    slotId = Column(Integer)
+    humidityMax = Column(Integer)
+    compensation = Column(Integer)
+    workFlag = Column(Boolean)
+
+class HumidityMin(Base):
+    __tablename__ = 'humiditymin'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    slotId = Column(Integer)
+    humidityMin = Column(Integer)
+    compensation = Column(Integer)
+    workFlag = Column(Boolean)
 

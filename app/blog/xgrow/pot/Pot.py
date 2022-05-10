@@ -1,4 +1,5 @@
 from datetime import datetime
+from app.blog.schemas.schemasPot import PotToModify
 
 
 class Pot():
@@ -7,7 +8,7 @@ class Pot():
     def __init__(self, pot_id, data=None):
         super().__init__()
 
-        #self.setObjectName(f"Pot:{pot_id}")
+        # self.setObjectName(f"Pot:{pot_id}")
 
         self.xgrowKey = ''
 
@@ -24,17 +25,15 @@ class Pot():
         self.pumpWorkingTime = 10
         self.wateringCycleTimeInHour = 1
         self.manualWateredInSecond = 0
-        #self._mcp3008 = mcp3008
-        #self.__gpio = gpio
+        # self._mcp3008 = mcp3008
+        # self.__gpio = gpio
 
         self._potHumidityLogList = []
         self._potHumidityList = []
         self._averageMemoryLimit = 30
 
-
         if data is not None:
             self.__dict__ = data
-
 
     def getPotId(self):
         '''return ID of current Pot object'''
@@ -48,7 +47,7 @@ class Pot():
         '''set Pot to Available'''
         self.isAvailable = boolean
 
-    #def getHumiditySensorOutput(self):
+    # def getHumiditySensorOutput(self):
     #    '''Read analog signal from the mcp3008 sensor (soil moisture)'''
     #    self._sensorOutput = self._mcp3008.analogRead(self._potID - 1)
     #    return self._sensorOutput
@@ -98,7 +97,7 @@ class Pot():
     def isPumpWorking(self):
         return self.pumpWorkStatus
 
-    #def setPumpWorking(self, boolean):
+    # def setPumpWorking(self, boolean):
     #    '''method set PumpWorking to boolean and run GPIO pin '''
     #    if boolean:
     #        self.__gpio.getGPIOExpander().setGpio(self.getPotId(), True)
@@ -126,7 +125,7 @@ class Pot():
     def setAverageMemoryLimit(self, integer):
         self._averageMemoryLimit = integer
 
-    #def humidityAverageUpdate(self):
+    # def humidityAverageUpdate(self):
     #    '''this method append soil moisture read from air sensor Mcp3008 to potHumidityList'''
     #    '''lenght limit of this list is equal to averageMemoryLimit'''
 
@@ -145,3 +144,31 @@ class Pot():
         except ZeroDivisionError:
             return 0
 
+    def getObjectSchema(self):
+        return PotToModify(potID=self.potID,
+                           isAvailable=self.isAvailable,
+                           pumpWorkingTimeLimit=self.pumpWorkingTimeLimit,
+                           autoWateringFunction=self.autoWateringFunction,
+                           pumpWorkStatus=self.pumpWorkStatus,
+                           # self.lastWateredCycleTime = datetime.now(
+                           sensorOutput=self.sensorOutput,
+                           minimalHumidity=self.minimalHumidity,
+                           maxSensorHumidityOutput=self.maxSensorHumidityOutput,
+                           minSensorHumidityOutput=self.minSensorHumidityOutput,
+                           pumpWorkingTime=self.pumpWorkingTime,
+                           wateringCycleTimeInHour=self.wateringCycleTimeInHour,
+                           manualWateredInSecond=self.manualWateredInSecond)
+
+    def saveObjectFromSchema(self, schema: PotToModify):
+        self.isAvailable = schema.isAvailable
+        self.pumpWorkingTimeLimit = schema.pumpWorkingTimeLimit
+        self.autoWateringFunction = schema.autoWateringFunction
+        self.pumpWorkStatus = schema.pumpWorkStatus
+        # self.lastWateredCycleTime = datetime.now()
+        self.sensorOutput = schema.sensorOutput
+        self.minimalHumidity = schema.minimalHumidity
+        self.maxSensorHumidityOutput = schema.maxSensorHumidityOutput
+        self.minSensorHumidityOutput = schema.minSensorHumidityOutput
+        self.pumpWorkingTime = schema.pumpWorkingTime
+        self.wateringCycleTimeInHour = schema.wateringCycleTimeInHour
+        self.manualWateredInSecond = schema.manualWateredInSecond

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.blog.xgrow import XgrowInstance
 from app.blog import models
-from app.blog.schemas import schemas, schemasPot, schemasAir
+from app.blog.schemas import schemas, schemasAir
 from fastapi import HTTPException, status
 
 from app.blog.xgrow.Climate import Climate
@@ -10,80 +10,18 @@ from app.blog.xgrow.Climate import Climate
 
 def getAirObject(currentUser: schemas.User):
 
-    xgrow: Climate = XgrowInstance.getXgrowInstnce().getXgrowObject(currentUser)
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
     schema: schemasAir = xgrow.getAir().getObjectSchema()
-    print(xgrow.xgrowKey)
     return schema
 
-def createPot(potId: int, request: schemasPot.PotToModify, db: Session, currentUser: schemas.User):
+def setAirObject(request: schemasAir.AirToModify, currentUser: schemas.User):
 
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        xgrowKey = currentUser.xgrowKey
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId).first()
-    else:
-        xgrowKey = currentUser.name
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name, models.Pot.potID == potId).first()
-
-    #checking if pot already exists
-    if pot:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Pot with the id {potId} is already exists")
-
-    newPot = models.Pot(
-        xgrowKey= xgrowKey,
-        #setObjectName = Column(String)
-        potID= potId,
-        isAvailable= request.isAvailable,
-        pumpWorkingTimeLimit= request.pumpWorkingTimeLimit,
-        autoWateringFunction= request.autoWateringFunction,
-        pumpWorkStatus= request.pumpWorkStatus,
-        #lastWateredCycleTime = datetime.now()
-        sensorOutput= request.sensorOutput,
-        minimalHumidity= request.minimalHumidity,
-        maxSensorHumidityOutput= request.maxSensorHumidityOutput,
-        minSensorHumidityOutput= request.minSensorHumidityOutput,
-        pumpWorkingTime= request.pumpWorkingTime,
-        wateringCycleTimeInHour= request.wateringCycleTimeInHour,
-        manualWateredInSecond= request.manualWateredInSecond
-    )
-    db.add(newPot)
-    db.commit()
-    db.refresh(newPot)
-    return newPot
-
-def getPot(potId: int, db: Session, currentUser: schemas.User):
-
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId).first()
-    else:
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name, models.Pot.potID == potId).first()
+    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
+    xgrow.getAir().saveObjectFromSchema(request)
 
 
-    pot = schemasPot.Pot(
-        xgrowKey= pot.xgrowKey,
-        #setObjectName = Column(String)
-        potID= pot.potID,
-        isAvailable= pot.isAvailable,
-        pumpWorkingTimeLimit= pot.pumpWorkingTimeLimit,
-        autoWateringFunction= pot.autoWateringFunction,
-        pumpWorkStatus= pot.pumpWorkStatus,
-        #lastWateredCycleTime = datetime.now()
-        sensorOutput= pot.sensorOutput,
-        minimalHumidity= pot.minimalHumidity,
-        maxSensorHumidityOutput= pot.maxSensorHumidityOutput,
-        minSensorHumidityOutput= pot.minSensorHumidityOutput,
-        pumpWorkingTime= pot.pumpWorkingTime,
-        wateringCycleTimeInHour= pot.wateringCycleTimeInHour,
-        manualWateredInSecond= pot.manualWateredInSecond
-    )
-    if not pot:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Pot with the id {potId} is not available")
-    return pot
-
-def updatePot(potId: int, request: schemasPot.PotToModify, db: Session, currentUser: schemas.User):
+# to do
+def updateDB(db: Session, currentUser: schemas.User):
 
     #checking currentUser is Device or User:
     if currentUser.userType:

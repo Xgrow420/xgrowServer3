@@ -1,3 +1,4 @@
+import enum
 from typing import List, Optional
 from pydantic import BaseModel
 from enum import Enum
@@ -22,8 +23,12 @@ class Fan(BaseModel):
     tempMin: int
     temperatureStatus: str #ENUM <=========
 
+    class Config():
+        orm_mode = True
+
 class FanToModify(BaseModel):
 
+    fanId: int
     isAvailable: bool
     isWorked: bool
     normalMode: bool
@@ -31,7 +36,10 @@ class FanToModify(BaseModel):
     hotMode: bool
     tempMax: int
     tempMin: int
-    temperatureStatus: str #ENUM <=========
+    temperatureStatus: enum.Enum #ENUM <=========
+
+    class Config():
+        orm_mode = True
 
 class FanToShow(BaseModel):
 
