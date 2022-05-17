@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.blog import models
 from app.blog.database import engine
-from app.blog.routers import blog, user, authentication, pot, fan, air, slot
+from app.blog.routers import blog, user, authentication, pot, fan, air, customDevice
 from app.blog.xgrow.XgrowInstance import XgrowInstance
 
 app = FastAPI()
@@ -14,4 +14,4 @@ app.include_router(user.router)
 app.include_router(pot.router)
 app.include_router(fan.router)
 app.include_router(air.router)
-app.include_router(slot.router)
+app.include_router(customDevice.router)

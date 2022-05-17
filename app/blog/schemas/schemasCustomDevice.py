@@ -8,6 +8,8 @@ class CustomDevice(BaseModel):
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
+    class Config():
+        orm_mode = True
 
 
 class CustomDeviceToModify(BaseModel):
@@ -16,6 +18,8 @@ class CustomDeviceToModify(BaseModel):
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
+    class Config():
+        orm_mode = True
 
     #TO DO timer = Column(Boolean)
     #triggerThreshold =

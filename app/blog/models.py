@@ -79,7 +79,7 @@ class User(Base):
     blogs = relationship('Blog', back_populates="creator")
 
 class CustomDevice(Base):
-    __tablename__ = 'slot'
+    __tablename__ = 'CustomDevice'
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)

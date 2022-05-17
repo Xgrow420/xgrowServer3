@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class SlotFunction(Enum):
+class CustomDeviceFunction(Enum):
 
     TIMER = 1
     TEMPERATURE_MIN = 2

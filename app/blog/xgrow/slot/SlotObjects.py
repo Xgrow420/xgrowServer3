@@ -1,6 +1,6 @@
 from app.blog.schemas.schemasCustomDevice import CustomDeviceToModify, TimerToModify, TemperatureMaxToModify, TemperatureMinToModify, \
     HumidityMaxToModify, HumidityMinToModify
-from app.blog.xgrow.slot.SlotFunction import SlotFunction
+from app.blog.xgrow.slot.CustomDeviceFunction import CustomDeviceFunction
 
 
 class SlotObject():
@@ -14,7 +14,7 @@ class SlotObject():
         self.xgrowKey = ''
 
         self.__slotId = slotID
-        self.__slotFunction = SlotFunction.TIMER
+        self.__slotFunction = CustomDeviceFunction.TIMER
         self.__slotWorkMode = False
         self.__workReversal = False
 
@@ -30,7 +30,7 @@ class SlotObject():
     def getSlotFunction(self):
         return self.__slotFunction
 
-    def setSlotFunction(self, slotFunction: SlotFunction):
+    def setSlotFunction(self, slotFunction: CustomDeviceFunction):
         self.__slotFunction = slotFunction
 
     def getSlotWorkMode(self):

@@ -4,7 +4,7 @@ import app.blog.xgrow.air.Air as air
 import app.blog.xgrow.time.Time as time
 import app.blog.xgrow.slot.SlotObjects as slot
 from app.blog.schemas import schemas
-from app.blog.xgrow.slot.SlotFunction import SlotFunction
+from app.blog.xgrow.slot.CustomDeviceFunction import CustomDeviceFunction
 
 fileName = 'climateObject.json'
 
@@ -109,17 +109,17 @@ class Climate():
 
             '''generate MOCK object'''
             if val == 1 | val == 2:
-                obj.setSlotFunction(SlotFunction.TIMER)
+                obj.setSlotFunction(CustomDeviceFunction.TIMER)
             if val == 3:
-                obj.setSlotFunction(SlotFunction.TEMPERATURE_MAX)
+                obj.setSlotFunction(CustomDeviceFunction.TEMPERATURE_MAX)
             if val == 4:
-                obj.setSlotFunction(SlotFunction.TEMPERATURE_MIN)
+                obj.setSlotFunction(CustomDeviceFunction.TEMPERATURE_MIN)
             if val == 5:
-                obj.setSlotFunction(SlotFunction.HUMIDITY_MAX)
+                obj.setSlotFunction(CustomDeviceFunction.HUMIDITY_MAX)
             if val == 6:
-                obj.setSlotFunction(SlotFunction.HUMIDITY_MIN)
+                obj.setSlotFunction(CustomDeviceFunction.HUMIDITY_MIN)
             if val > 6:
-                obj.setSlotFunction(SlotFunction.NULL)
+                obj.setSlotFunction(CustomDeviceFunction.NULL)
 
             slotList.append(obj)
         return slotList
