@@ -78,15 +78,19 @@ class User(Base):
 
     blogs = relationship('Blog', back_populates="creator")
 
-class Slot(Base):
+class CustomDevice(Base):
     __tablename__ = 'slot'
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
-    slotId = Column(Integer)
-    slotFunction = Column(String) #SlotFunction.TIMER  ENUM TO DO
-    slotWorkMode = Column(Boolean)
-    workReversal = Column(Boolean)
+    index = Column(Integer)
+    active = Column(Boolean)
+    deviceFunction = Column(String) #SlotFunction.TIMER  ENUM TO DO
+    working = Column(Boolean)
+
+    #TO DO timer = Column(Boolean)
+    #triggerThreshold =
+    #compensation =
 
 class Timer(Base):
     __tablename__ = 'timer'

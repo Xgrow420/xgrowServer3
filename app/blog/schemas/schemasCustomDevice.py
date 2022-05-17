@@ -1,26 +1,30 @@
 from pydantic import BaseModel
 
 
-class Slot(BaseModel):
+class CustomDevice(BaseModel):
 
     xgrowKey: str
-    slotId: int
-    slotFunction: str #SlotFunction.TIMER  ENUM TO DO
-    slotWorkMode: bool
-    workReversal: bool
+    index: int
+    active: bool
+    deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
+    working: bool
 
 
-class SlotToModify(BaseModel):
+class CustomDeviceToModify(BaseModel):
 
-    slotId: int
-    slotFunction: str #SlotFunction.TIMER  ENUM TO DO
-    slotWorkMode: bool
-    workReversal: bool
+    index: int
+    active: bool
+    deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
+    working: bool
+
+    #TO DO timer = Column(Boolean)
+    #triggerThreshold =
+    #compensation =
 
 class Timer(BaseModel):
 
     xgrowKey: str
-    slotId: int
+    index: int
     hourStart: int
     minuteStart: int
     hourStop: int
@@ -29,7 +33,7 @@ class Timer(BaseModel):
 
 class TimerToModify(BaseModel):
 
-    slotId: int
+    index: int
     hourStart: int
     minuteStart: int
     hourStop: int
@@ -39,7 +43,7 @@ class TimerToModify(BaseModel):
 class TemperatureMax(BaseModel):
 
     xgrowKey: str
-    slotId: int
+    index: int
     tempMax: int
     compensation: int
     workFlag: bool
@@ -47,7 +51,7 @@ class TemperatureMax(BaseModel):
 
 class TemperatureMaxToModify(BaseModel):
 
-    slotId: int
+    index: int
     tempMax: int
     compensation: int
     workFlag: bool
@@ -55,14 +59,14 @@ class TemperatureMaxToModify(BaseModel):
 class TemperatureMin(BaseModel):
 
     xgrowKey: str
-    slotId: int
+    index: int
     tempMin: int
     compensation: int
     workFlag: bool
 
 class TemperatureMinToModify(BaseModel):
 
-    slotId: int
+    index: int
     tempMin: int
     compensation: int
     workFlag: bool
@@ -70,7 +74,7 @@ class TemperatureMinToModify(BaseModel):
 class HumidityMax(BaseModel):
 
     xgrowKey: str
-    slotId: int
+    index: int
     humidityMax: int
     compensation: int
     workFlag: bool
@@ -78,7 +82,7 @@ class HumidityMax(BaseModel):
 
 class HumidityMaxToModify(BaseModel):
 
-    slotId: int
+    index: int
     humidityMax: int
     compensation: int
     workFlag: bool
@@ -86,14 +90,14 @@ class HumidityMaxToModify(BaseModel):
 class HumidityMin(BaseModel):
 
     xgrowKey: str
-    slotId: int
+    index: int
     humidityMin: int
     compensation: int
     workFlag: bool
 
 class HumidityMinToModify(BaseModel):
 
-    slotId: int
+    index: int
     humidityMin: int
     compensation: int
     workFlag: bool

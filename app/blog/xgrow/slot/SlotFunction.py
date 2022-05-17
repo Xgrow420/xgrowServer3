@@ -11,15 +11,15 @@ class SlotFunction(Enum):
     NULL = 6
 
 #SlotFunction.TIMER
-    @staticmethod
-    def fromString(input: str):
-        match input:
-            case 'TIMER':
-                return SlotFunction.TIMER
-            case 'b':
-                return SlotFunction.TEMPERATURE_MIN
-            case _:
-                return 'rip'
+#    @staticmethod
+#    def fromString(input: str):
+#        match input:
+#            case 'TIMER':
+#                return SlotFunction.TIMER
+#            case 'b':
+#                return SlotFunction.TEMPERATURE_MIN
+#            case _:
+#                return 'rip'
 
     @staticmethod
     def toString(self):

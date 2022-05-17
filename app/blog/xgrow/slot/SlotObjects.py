@@ -1,4 +1,4 @@
-from app.blog.schemas.schemasSlot import SlotToModify, TimerToModify, TemperatureMaxToModify, TemperatureMinToModify, \
+from app.blog.schemas.schemasCustomDevice import CustomDeviceToModify, TimerToModify, TemperatureMaxToModify, TemperatureMinToModify, \
     HumidityMaxToModify, HumidityMinToModify
 from app.blog.xgrow.slot.SlotFunction import SlotFunction
 
@@ -61,13 +61,13 @@ class SlotObject():
         return self.__humidityMin
 
     def getObjectSchema(self):
-        return SlotToModify(slotId=self.__slotId,
-                            slotFunction=self.__slotFunction,
-                            slotWorkMode=self.__slotWorkMode,
-                            workReversal=self.__workReversal
-                            )
+        return CustomDeviceToModify(slotId=self.__slotId,
+                                    slotFunction=self.__slotFunction,
+                                    slotWorkMode=self.__slotWorkMode,
+                                    workReversal=self.__workReversal
+                                    )
 
-    def saveObjectFromSchema(self, schema: SlotToModify):
+    def saveObjectFromSchema(self, schema: CustomDeviceToModify):
         self.__slotId = schema.slotId
         self.__slotFunction = schema.slotFunction
         self.__slotWorkMode = schema.slotWorkMode
