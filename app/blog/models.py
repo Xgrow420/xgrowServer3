@@ -1,9 +1,11 @@
-from typing import List
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Enum, ARRAY
-from app.blog.database import Base
 from sqlalchemy.orm import relationship
+from typing import List
 
-#DATABASE MODEL
+from app.blog.database import Base
+
+
+# DATABASE MODEL
 
 class Air(Base):
     __tablename__ = 'air'
@@ -23,13 +25,13 @@ class Pot(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
-    #setObjectName = Column(String)
+    # setObjectName = Column(String)
     index = Column(Integer)
-    active = Column(Boolean, default=False) # bool
+    active = Column(Boolean, default=False)  # bool
     pumpWorkingTimeLimit = Column(Integer)
-    autoWateringFunction = Column(Boolean, default=False) # bool
-    pumpWorkStatus = Column(Boolean, default=False) # bool
-    #lastWateredCycleTime = datetime.now()
+    autoWateringFunction = Column(Boolean, default=False)  # bool
+    pumpWorkStatus = Column(Boolean, default=False)  # bool
+    # lastWateredCycleTime = datetime.now()
     sensorOutput = Column(Integer)
     minimalHumidity = Column(Integer)
     maxSensorHumidityOutput = Column(Integer)
@@ -37,6 +39,7 @@ class Pot(Base):
     pumpWorkingTime = Column(Integer)
     wateringCycleTimeInHour = Column(Integer)
     manualWateredInSecond = Column(Integer)
+
 
 class Fan(Base):
     __tablename__ = 'fan'
@@ -51,7 +54,8 @@ class Fan(Base):
     hotMode = Column(Boolean, default=False)
     tempMax = Column(Integer)
     tempMin = Column(Integer)
-    temperatureStatus = Column(Integer) #ENUM <=========
+    temperatureStatus = Column(Integer)  # ENUM <=========
+
 
 class Blog(Base):
     __tablename__ = 'blogs'
@@ -65,7 +69,7 @@ class Blog(Base):
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
@@ -73,26 +77,27 @@ class User(Base):
     userType = Column(Boolean)
     password = Column(String)
 
-    #PotList = Column(List)
+    # PotList = Column(List)
 
+    blogs = relationship("Blog", back_populates="creator")
 
-    blogs = relationship('Blog', back_populates="creator")
 
 class CustomDevice(Base):
-    __tablename__ = 'customDevice'
+    __tablename__ = "customDevice"
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
     index = Column(Integer)
     active = Column(Boolean)
-    deviceFunction = Column(String) #SlotFunction.TIMER  ENUM TO DO
+    deviceFunction = Column(String)  # SlotFunction.TIMER  ENUM TO DO
     working = Column(Boolean)
 
-    timerTrigger = relationship('TimerTrigger', back_populates="creator")
+    timerTrigger = relationship("TimerTrigger", back_populates="linkedDevice", uselist=False)
 
-    #TO DO timer = Column(Boolean)
-    #triggerThreshold =
-    #compensation =
+    # TO DO timer = Column(Boolean)
+    # triggerThreshold =
+    # compensation =
+
 
 class TimerTrigger(Base):
     __tablename__ = 'timerTrigger'
@@ -107,7 +112,8 @@ class TimerTrigger(Base):
     lightCycle = Column(Integer)
 
     customDevice_id = Column(Integer, ForeignKey('customDevice.id'))
-    creator = relationship('CustomDevice', back_populates="timerTrigger")
+    linkedDevice = relationship('CustomDevice', back_populates="timerTrigger")
+
 
 class AirSensorTrigger(Base):
     __tablename__ = 'airSensorTrigger'
@@ -118,7 +124,3 @@ class AirSensorTrigger(Base):
     functionType = Column(String)
     value = Column(Integer)
     compensation = Column(Integer)
-
-
-
-

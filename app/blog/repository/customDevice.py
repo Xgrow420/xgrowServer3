@@ -30,29 +30,36 @@ def setCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModi
     device = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
                                                   models.CustomDevice.index == request.index)
 
-    if not device.first():
+
+    if device.first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"Slot for user {currentUser.xgrowKey} and index {request.index} already exists")
+
+    else:
         newCustomDevice = models.CustomDevice(xgrowKey=currentUser.xgrowKey,
                                               index=request.index,
                                               deviceFunction=request.deviceFunction,
                                               working=request.working,
-                                              active=request.active,
+                                              active=request.active)
 
-                                              timerTrigger=schemasCustomDevice.TimerTrigger(
-                                                  xgrowKey=currentUser.xgrowKey,
-                                                  index=request.timerTrigger.index,
-                                                  hourStart=request.timerTrigger.hourStart,
-                                                  minuteStart=request.timerTrigger.minuteStart,
-                                                  hourStop=request.timerTrigger.hourStop,
-                                                  minuteStop=request.timerTrigger.minuteStop,
-                                                  lightCycle=request.timerTrigger.lightCycle
-                                                  )
-                                              )
         db.add(newCustomDevice)
         db.commit()
         db.refresh(newCustomDevice)
-        return 'created'
 
-    else:
-        device.update(request.dict())
+        timerTrigger = models.TimerTrigger(
+            xgrowKey=currentUser.xgrowKey,
+            index=request.timerTrigger.index,
+            hourStart=request.timerTrigger.hourStart,
+            minuteStart=request.timerTrigger.minuteStart,
+            hourStop=request.timerTrigger.hourStop,
+            minuteStop=request.timerTrigger.minuteStop,
+            lightCycle=request.timerTrigger.lightCycle,
+            customDevice_id=newCustomDevice.id)
+
+        db.add(timerTrigger)
         db.commit()
-        return 'updated'
+        db.refresh(newCustomDevice)
+
+        print(newCustomDevice)
+
+        return newCustomDevice
