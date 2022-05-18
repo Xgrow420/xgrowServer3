@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
-from app.blog import models
-from app.blog.database import engine
-from app.blog.routers import blog, user, authentication, pot, fan, air, customDevice
-from app.blog.xgrow.XgrowInstance import XgrowInstance
+from app.data import models
+from app.data.database import engine
+from app.routers import air, customDevice
+from app.routers import fan, blog, authentication, user, pot
+from app.xgrow.XgrowInstance import XgrowInstance
 
 app = FastAPI()
 
