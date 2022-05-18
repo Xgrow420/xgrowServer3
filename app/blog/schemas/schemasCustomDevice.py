@@ -1,6 +1,56 @@
 from pydantic import BaseModel
 
 
+class TimerTrigger(BaseModel):
+
+    xgrowKey: str
+    index: int
+    hourStart: int
+    minuteStart: int
+    hourStop: int
+    minuteStop: int
+    lightCycle: int
+
+
+    class Config():
+        orm_mode = True
+
+class TimerTriggerToModify(BaseModel):
+
+    index: int
+    hourStart: int
+    minuteStart: int
+    hourStop: int
+    minuteStop: int
+    lightCycle: int
+
+    class Config():
+        orm_mode = True
+
+class AirSensorTrigger(BaseModel):
+
+
+    xgrowKey: str
+    index: int
+    functionType: str
+    value: int
+    compensation: int
+
+    class Config():
+        orm_mode = True
+
+
+class AirSensorTriggerToModify(BaseModel):
+
+    index: int
+    functionType: str
+    value: int
+    compensation: int
+
+    class Config():
+        orm_mode = True
+
+
 class CustomDevice(BaseModel):
 
     xgrowKey: str
@@ -8,6 +58,7 @@ class CustomDevice(BaseModel):
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
+    timerTrigger: TimerTrigger
     class Config():
         orm_mode = True
 
@@ -18,6 +69,7 @@ class CustomDeviceToModify(BaseModel):
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
+    timerTrigger: TimerTrigger
     class Config():
         orm_mode = True
 
@@ -25,83 +77,4 @@ class CustomDeviceToModify(BaseModel):
     #triggerThreshold =
     #compensation =
 
-class Timer(BaseModel):
 
-    xgrowKey: str
-    index: int
-    hourStart: int
-    minuteStart: int
-    hourStop: int
-    minuteStop: int
-    lightCycle: int
-
-class TimerToModify(BaseModel):
-
-    index: int
-    hourStart: int
-    minuteStart: int
-    hourStop: int
-    minuteStop: int
-    lightCycle: int
-
-class TemperatureMax(BaseModel):
-
-    xgrowKey: str
-    index: int
-    tempMax: int
-    compensation: int
-    workFlag: bool
-
-
-class TemperatureMaxToModify(BaseModel):
-
-    index: int
-    tempMax: int
-    compensation: int
-    workFlag: bool
-
-class TemperatureMin(BaseModel):
-
-    xgrowKey: str
-    index: int
-    tempMin: int
-    compensation: int
-    workFlag: bool
-
-class TemperatureMinToModify(BaseModel):
-
-    index: int
-    tempMin: int
-    compensation: int
-    workFlag: bool
-
-class HumidityMax(BaseModel):
-
-    xgrowKey: str
-    index: int
-    humidityMax: int
-    compensation: int
-    workFlag: bool
-
-
-class HumidityMaxToModify(BaseModel):
-
-    index: int
-    humidityMax: int
-    compensation: int
-    workFlag: bool
-
-class HumidityMin(BaseModel):
-
-    xgrowKey: str
-    index: int
-    humidityMin: int
-    compensation: int
-    workFlag: bool
-
-class HumidityMinToModify(BaseModel):
-
-    index: int
-    humidityMin: int
-    compensation: int
-    workFlag: bool

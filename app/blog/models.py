@@ -24,8 +24,8 @@ class Pot(Base):
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
     #setObjectName = Column(String)
-    potID = Column(Integer)
-    isAvailable = Column(Boolean, default=False) # bool
+    index = Column(Integer)
+    active = Column(Boolean, default=False) # bool
     pumpWorkingTimeLimit = Column(Integer)
     autoWateringFunction = Column(Boolean, default=False) # bool
     pumpWorkStatus = Column(Boolean, default=False) # bool
@@ -43,15 +43,15 @@ class Fan(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
-    fanId = Column(Integer)
-    isAvailable = Column(Boolean, default=False)
-    isWorked = Column(Boolean, default=False)
+    index = Column(Integer)
+    active = Column(Boolean, default=False)
+    working = Column(Boolean, default=False)
     normalMode = Column(Boolean, default=False)
     coldMode = Column(Boolean, default=False)
     hotMode = Column(Boolean, default=False)
     tempMax = Column(Integer)
     tempMin = Column(Integer)
-    temperatureStatus = Column(Enum) #ENUM <=========
+    temperatureStatus = Column(Integer) #ENUM <=========
 
 class Blog(Base):
     __tablename__ = 'blogs'
@@ -79,7 +79,7 @@ class User(Base):
     blogs = relationship('Blog', back_populates="creator")
 
 class CustomDevice(Base):
-    __tablename__ = 'CustomDevice'
+    __tablename__ = 'customDevice'
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
@@ -88,59 +88,37 @@ class CustomDevice(Base):
     deviceFunction = Column(String) #SlotFunction.TIMER  ENUM TO DO
     working = Column(Boolean)
 
+    timerTrigger = relationship('TimerTrigger', back_populates="creator")
+
     #TO DO timer = Column(Boolean)
     #triggerThreshold =
     #compensation =
 
-class Timer(Base):
-    __tablename__ = 'timer'
+class TimerTrigger(Base):
+    __tablename__ = 'timerTrigger'
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
-    slotId = Column(Integer)
+    index = Column(Integer)
     hourStart = Column(Integer)
     minuteStart = Column(Integer)
     hourStop = Column(Integer)
     minuteStop = Column(Integer)
     lightCycle = Column(Integer)
 
-class TemperatureMax(Base):
-    __tablename__ = 'temperaturemax'
+    customDevice_id = Column(Integer, ForeignKey('customDevice.id'))
+    creator = relationship('CustomDevice', back_populates="timerTrigger")
+
+class AirSensorTrigger(Base):
+    __tablename__ = 'airSensorTrigger'
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
-    slotId = Column(Integer)
-    tempMax = Column(Integer)
+    index = Column(Integer)
+    functionType = Column(String)
+    value = Column(Integer)
     compensation = Column(Integer)
-    workFlag = Column(Boolean)
 
-class TemperatureMin(Base):
-    __tablename__ = 'temperaturemin'
 
-    id = Column(Integer, primary_key=True, index=True)
-    xgrowKey = Column(String)
-    slotId = Column(Integer)
-    tempMin = Column(Integer)
-    compensation = Column(Integer)
-    workFlag = Column(Boolean)
 
-class HumidityMax(Base):
-    __tablename__ = 'humiditymax'
-
-    id = Column(Integer, primary_key=True, index=True)
-    xgrowKey = Column(String)
-    slotId = Column(Integer)
-    humidityMax = Column(Integer)
-    compensation = Column(Integer)
-    workFlag = Column(Boolean)
-
-class HumidityMin(Base):
-    __tablename__ = 'humiditymin'
-
-    id = Column(Integer, primary_key=True, index=True)
-    xgrowKey = Column(String)
-    slotId = Column(Integer)
-    humidityMin = Column(Integer)
-    compensation = Column(Integer)
-    workFlag = Column(Boolean)
 

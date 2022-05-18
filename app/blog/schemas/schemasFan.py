@@ -13,42 +13,30 @@ class TemperatureStatus(Enum):
 class Fan(BaseModel):
 
     xgrowKey: str
-    fanId: int
-    isAvailable: bool
-    isWorked: bool
+    index: int
+    active: bool
+    working: bool
     normalMode: bool
     coldMode: bool
     hotMode: bool
     tempMax: int
     tempMin: int
-    temperatureStatus: str #ENUM <=========
+    temperatureStatus: int #ENUM <=========
 
     class Config():
         orm_mode = True
 
 class FanToModify(BaseModel):
 
-    fanId: int
-    isAvailable: bool
-    isWorked: bool
+    index: int
+    active: bool
+    working: bool
     normalMode: bool
     coldMode: bool
     hotMode: bool
     tempMax: int
     tempMin: int
-    temperatureStatus: enum.Enum #ENUM <=========
+    temperatureStatus: int #ENUM <=========
 
     class Config():
         orm_mode = True
-
-class FanToShow(BaseModel):
-
-    fanId: int
-    isAvailable: bool
-    isWorked: bool
-    normalMode: bool
-    coldMode: bool
-    hotMode: bool
-    tempMax: int
-    tempMin: int
-    temperatureStatus: str #ENUM <=========

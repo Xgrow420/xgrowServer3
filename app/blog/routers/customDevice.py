@@ -13,8 +13,6 @@ router = APIRouter(
 dataBase = database.getDataBase
 
 
-
-
 @router.get('/', response_model=List[schemasCustomDevice.CustomDeviceToModify])
 def getAllSlots(current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
     return customDevice.getCustomDevices(current_user, db)

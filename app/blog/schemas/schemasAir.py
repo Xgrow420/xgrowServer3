@@ -8,22 +8,18 @@ class Air(BaseModel):
 
     airTemperature: int
     airHumidity: int
+    #airTemperatureLogList: str
+    #airHumidityLogList: str
 
-    airTemperatureLogList: str
-    airHumidityLogList: str
+    class Config():
+        orm_mode = True
 
 class AirToModify(BaseModel):
 
     airTemperature: int
     airHumidity: int
+    #airTemperatureLogList: str
+    #airHumidityLogList: str
 
-    airTemperatureLogList: str
-    airHumidityLogList: str
-
-class AirToShow(BaseModel):
-
-    airTemperature: int
-    airHumidity: int
-
-    airTemperatureLogList: str
-    airHumidityLogList: str
+    class Config():
+        orm_mode = True

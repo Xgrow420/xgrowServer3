@@ -1,5 +1,4 @@
-from app.blog.schemas.schemasCustomDevice import CustomDeviceToModify, TimerToModify, TemperatureMaxToModify, TemperatureMinToModify, \
-    HumidityMaxToModify, HumidityMinToModify
+from app.blog.schemas.schemasCustomDevice import CustomDeviceToModify, TimerTriggerToModify
 from app.blog.xgrow.slot.CustomDeviceFunction import CustomDeviceFunction
 
 
@@ -60,18 +59,18 @@ class SlotObject():
     def getMinHumidityObject(self):
         return self.__humidityMin
 
-    def getObjectSchema(self):
-        return CustomDeviceToModify(slotId=self.__slotId,
-                                    slotFunction=self.__slotFunction,
-                                    slotWorkMode=self.__slotWorkMode,
-                                    workReversal=self.__workReversal
-                                    )
+    #def getObjectSchema(self):
+    #    return CustomDeviceToModify(slotId=self.__slotId,
+    #                                slotFunction=self.__slotFunction,
+    #                                slotWorkMode=self.__slotWorkMode,
+    #                                workReversal=self.__workReversal
+    #                                )
 
-    def saveObjectFromSchema(self, schema: CustomDeviceToModify):
-        self.__slotId = schema.slotId
-        self.__slotFunction = schema.slotFunction
-        self.__slotWorkMode = schema.slotWorkMode
-        self.__workReversal = schema.workReversal
+    #def saveObjectFromSchema(self, schema: CustomDeviceToModify):
+    #    self.__slotId = schema.slotId
+    #    self.__slotFunction = schema.slotFunction
+    #    self.__slotWorkMode = schema.slotWorkMode
+    #    self.__workReversal = schema.workReversal
 
 
 class Timer():
@@ -123,15 +122,15 @@ class Timer():
             self.__lightCycle = integer
 
     def getObjectSchema(self):
-        return TimerToModify(slotId=self.__slotId,
-                             hourStart=self.__hourStart,
-                             minuteStart=self.__minuteStart,
-                             hourStop=self.__hourStop,
-                             minuteStop=self.__minuteStop,
-                             lightCycle=self.__lightCycle
-                             )
+        return TimerTriggerToModify(slotId=self.__slotId,
+                                    hourStart=self.__hourStart,
+                                    minuteStart=self.__minuteStart,
+                                    hourStop=self.__hourStop,
+                                    minuteStop=self.__minuteStop,
+                                    lightCycle=self.__lightCycle
+                                    )
 
-    def saveObjectFromSchema(self, schema: TimerToModify):
+    def saveObjectFromSchema(self, schema: TimerTriggerToModify):
         self.__slotId = schema.slotId
         self.__hourStart = schema.hourStart
         self.__minuteStart = schema.minuteStart
@@ -169,16 +168,16 @@ class TemperatureMax():
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
 
-    def getObjectSchema(self):
-        return TemperatureMaxToModify(tempMax=self.__tempMax,
-                                      compensation=self.__compensation,
-                                      workFlag=self.__workFlag
-                                      )
+    #def getObjectSchema(self):
+    #    return TemperatureMaxToModify(tempMax=self.__tempMax,
+    #                                  compensation=self.__compensation,
+    #                                  workFlag=self.__workFlag
+    #                                  )
 
-    def saveObjectFromSchema(self, schema: TemperatureMaxToModify):
-        self.__tempMax = schema.tempMax
-        self.__compensation = schema.compensation
-        self.__workFlag = schema.workFlag
+    #def saveObjectFromSchema(self, schema: TemperatureMaxToModify):
+    #    self.__tempMax = schema.tempMax
+    #    self.__compensation = schema.compensation
+    #    self.__workFlag = schema.workFlag
 
 
 
@@ -212,13 +211,13 @@ class TemperatureMin():
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
 
-    def getObjectSchema(self):
-        return TemperatureMinToModify(
-        )
+    #def getObjectSchema(self):
+    #    return TemperatureMinToModify(
+    #    )
 
-    def saveObjectFromSchema(self, schema: TemperatureMinToModify):
+    #def saveObjectFromSchema(self, schema: TemperatureMinToModify):
 
-        pass
+    #   pass
 
 
 class HumidityMax():
@@ -251,12 +250,12 @@ class HumidityMax():
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
 
-    def getObjectSchema(self):
-        return HumidityMaxToModify(
-        )
+    #def getObjectSchema(self):
+    #    return HumidityMaxToModify(
+    #    )
 
-    def saveObjectFromSchema(self, schema: HumidityMaxToModify):
-        pass
+    #def saveObjectFromSchema(self, schema: HumidityMaxToModify):
+    #    pass
 
 
 class HumidityMin():
@@ -289,9 +288,9 @@ class HumidityMin():
     def setSlotWorking(self, boolean):
         self.__workFlag = boolean
 
-    def getObjectSchema(self):
-        return HumidityMinToModify(
-        )
+    #def getObjectSchema(self):
+    #    return HumidityMinToModify(
+    #    )
 
-    def saveObjectFromSchema(self, schema: HumidityMinToModify):
-        pass
+    #def saveObjectFromSchema(self, schema: HumidityMinToModify):
+    #    pass

@@ -29,12 +29,12 @@ def createUser(request: schemas.User, db: Session):
 
 def getDeviceData(userSchema: schemas.User, db: Session):
 
-    device: schemas.User = db.query(models.User).filter(models.User.name == userSchema.xgrowKey).first()
+    device = db.query(models.User).filter(models.User.name == userSchema.xgrowKey).first()
 
     if not device:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"User {userSchema.name} do not have device! ERROR")
-    return schemas.User(name=device.name, xgrowKey=device.xgrowKey, password=device.password)
+    return device
 
 
 

@@ -14,28 +14,9 @@ dataBase = database.getDataBase
 
 
 @router.get('/', response_model=schemasAir.AirToModify)
-def getAirObject(current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return air.getAirObject(current_user)
+def get_air(current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return air.getAir(current_user, db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def setAirObject(request: schemasAir.AirToModify, currentUser: schemas.User = Depends(oauth2.get_current_user)):
-    air.setAirObject(request, currentUser)
-
-#@router.post('/{potId}', status_code=status.HTTP_201_CREATED,)
-#def create(potId: int, request: schemasPot.PotToModify, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-#    return air.createPot(potId, request, db, current_user)
-
-
-#@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-#def destroy(id: int, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-#    return air.destroy(id, db)
-
-
-#@router.put('/{id}', status_code=status.HTTP_202_ACCEPTED)
-#def update(id: int, request: schemasPot.PotToModify, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-#    return air.updatePot(id, request, db, current_user)
-
-
-#@router.get('/{id}', status_code=200, response_model=schemasPot.Pot)
-#def show(id: int, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-#    return air.getPot(id, db, current_user)
+def set_air(request: schemasAir.AirToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return air.setAir(request, current_user, db)

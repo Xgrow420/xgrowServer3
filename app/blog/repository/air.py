@@ -8,31 +8,25 @@ from fastapi import HTTPException, status
 from app.blog.xgrow.Climate import Climate
 
 
-def getAirObject(currentUser: schemas.User):
-
-    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
-    schema: schemasAir = xgrow.getAir().getObjectSchema()
-    return schema
-
-def setAirObject(request: schemasAir.AirToModify, currentUser: schemas.User):
-
-    xgrow: Climate = XgrowInstance.getXgrowObject(currentUser)
-    xgrow.getAir().saveObjectFromSchema(request)
+def getAir(currentUser: schemas.User, db: Session):
+    air = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey).first()
+    return air
 
 
-# to do
-def updateDB(db: Session, currentUser: schemas.User):
+def setAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
+    air = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey)
 
-    #checking currentUser is Device or User:
-    if currentUser.userType:
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey, models.Pot.potID == potId)
+    if not air.first():
+        newAir = models.Air(xgrowKey=currentUser.xgrowKey,
+                            airTemperature=request.airTemperature,
+                            airHumidity=request.airHumidity
+                            )
+        db.add(newAir)
+        db.commit()
+        db.refresh(newAir)
+        return 'created'
+
     else:
-        pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.name, models.Pot.potID == potId)
-
-    if not pot.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Pot with id {potId} not found")
-
-    pot.update(request.dict())
-    db.commit()
-    return 'updated'
+        air.update(request.dict())
+        db.commit()
+        return 'updated'

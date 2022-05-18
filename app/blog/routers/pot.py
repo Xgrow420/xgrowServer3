@@ -14,28 +14,13 @@ dataBase = database.getDataBase
 
 
 @router.get('/', response_model=List[schemasPot.PotToModify])
-def getAllPots(current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.getPots(current_user)
+def getAllPots(current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return pot.getPots(current_user, db)
 
-@router.get('/{potId}', response_model=schemasPot.PotToModify)
-def getPot(potId: int, current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.getPot(potId, current_user)
+@router.get('/{index}', response_model=schemasPot.PotToModify)
+def getPot(index: int, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return pot.getPot(index, current_user, db)
 
-@router.post('/', response_model=schemasPot.PotToModify)
-def setPotObject(request: schemasPot.PotToModify, current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.setPotObject(request, current_user)
-
-
-@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def destroy(id: int, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.destroy(id, db)
-
-
-@router.put('/{id}', status_code=status.HTTP_202_ACCEPTED)
-def update(id: int, request: schemasPot.PotToModify, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.updatePot(id, request, db, current_user)
-
-
-@router.get('/{id}', status_code=200, response_model=schemasPot.Pot)
-def show(id: int, db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
-    return pot.getPot(id, db, current_user)
+@router.post('/', status_code=status.HTTP_201_CREATED)
+def setPot(request: schemasPot.PotToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return pot.setPot(request, current_user, db)
