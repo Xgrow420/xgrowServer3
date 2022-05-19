@@ -26,5 +26,5 @@ def getDeviceForCurrentUser(deviceIndex: int, current_user: schemas.User = Depen
 @router.post('/', status_code=status.HTTP_202_ACCEPTED, response_model=schemasCustomDevice.CustomDeviceToModify)
 def setDeviceForCurrentUser(request: schemasCustomDevice.CustomDeviceToModify, current_user: schemas.User = Depends(
     oauth2.get_current_user), db: Session = Depends(dataBase)):
-    return customDevice.setCustomDevice(db, request, current_user)
+    return customDevice.createCustomDevice(db, request, current_user)
 
