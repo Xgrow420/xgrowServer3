@@ -1,12 +1,9 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.data import models
+from app.repository import timerTrigger
 from app.schemas import schemas, schemasCustomDevice
-from fastapi import HTTPException, status
-
-from app.schemas.schemasCustomDevice import TimerTriggerToModify, TimerTrigger
-from app.xgrow import XgrowInstance
-from app.xgrow.Climate import Climate
 
 
 def getCustomDevices(currentUser: schemas.User, db: Session):
@@ -26,14 +23,14 @@ def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
         return device
 
 
-def setCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
+def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
     device = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
                                                   models.CustomDevice.index == request.index)
 
 
     if device.first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"Slot for user {currentUser.xgrowKey} and index {request.index} already exists")
+                        detail=f"CustomDevice for user {currentUser.name} with index {request.index} already exists")
 
     else:
         newCustomDevice = models.CustomDevice(xgrowKey=currentUser.xgrowKey,
@@ -46,20 +43,8 @@ def setCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModi
         db.commit()
         db.refresh(newCustomDevice)
 
-        timerTrigger = models.TimerTrigger(
-            xgrowKey=currentUser.xgrowKey,
-            index=request.timerTrigger.index,
-            hourStart=request.timerTrigger.hourStart,
-            minuteStart=request.timerTrigger.minuteStart,
-            hourStop=request.timerTrigger.hourStop,
-            minuteStop=request.timerTrigger.minuteStop,
-            lightCycle=request.timerTrigger.lightCycle,
-            customDevice_id=newCustomDevice.id)
-
-        db.add(timerTrigger)
-        db.commit()
-        db.refresh(newCustomDevice)
-
-        print(newCustomDevice)
+        '''auto create timerTrigger'''
+        request.timerTrigger.index = request.index
+        timerTrigger.createTimerTrigger(request.timerTrigger, currentUser, db)
 
         return newCustomDevice
