@@ -27,10 +27,9 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
     device = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
                                                   models.CustomDevice.index == request.index)
 
-
     if device.first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f"CustomDevice for user {currentUser.name} with index {request.index} already exists")
+                            detail=f"CustomDevice for user {currentUser.name} with index {request.index} already exists")
 
     else:
         newCustomDevice = models.CustomDevice(xgrowKey=currentUser.xgrowKey,
@@ -48,3 +47,22 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         timerTrigger.createTimerTrigger(request.timerTrigger, currentUser, db)
 
         return newCustomDevice
+
+
+def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
+    customDevice = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
+                                                        models.CustomDevice.index == request.index)
+
+    if not customDevice.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"TimerTrigger with index {request.index} not found")
+    else:
+        #updatedCustomDevice = schemasCustomDevice.RawCustomDevice(request.dict())
+        #customDevice.update(updatedCustomDevice)
+        #db.commit()
+
+        '''auto update timerTrigger'''
+        request.timerTrigger.index = request.index
+        timerTrigger.updateTimerTrigger(request.timerTrigger, currentUser, db)
+
+        return 'updated'

@@ -24,5 +24,9 @@ def getTimerTrigger(index: int, current_user: schemas.User = Depends(oauth2.get_
     return timerTrigger.getTimerTrigger(index, current_user, db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def setTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
     return timerTrigger.createTimerTrigger(request, current_user, db)
+
+@router.put('/', status_code=status.HTTP_201_CREATED)
+def updateTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return timerTrigger.updateTimerTrigger(request, current_user, db)
