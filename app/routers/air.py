@@ -20,5 +20,9 @@ def get_air(current_user: schemas.User = Depends(oauth2.get_current_user), db: S
     return air.getAir(current_user, db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def set_air(request: schemasAir.AirToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
-    return air.setAir(request, current_user, db)
+def create_air(request: schemasAir.AirToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return air.createAir(request, current_user, db)
+
+@router.put('/', status_code=status.HTTP_202_ACCEPTED)
+def update_air(request: schemasAir.AirToModify, current_user: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    return air.updateAir(request, current_user, db)

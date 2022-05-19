@@ -24,6 +24,9 @@ def getFan(index: int, currentUser: schemas.User = Depends(oauth2.get_current_us
     return fan.getFan(index, currentUser, db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def setFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
-    fan.setFan(request, currentUser, db)
+def createFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    fan.createFan(request, currentUser, db)
 
+@router.put('/', status_code=status.HTTP_201_CREATED)
+def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+    fan.updateFan(request, currentUser, db)

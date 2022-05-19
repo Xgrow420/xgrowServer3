@@ -57,9 +57,10 @@ def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"TimerTrigger with index {request.index} not found")
     else:
+        '''nie działa xD '''
         #updatedCustomDevice = schemasCustomDevice.RawCustomDevice(request.dict())
-        #customDevice.update(updatedCustomDevice)
-        #db.commit()
+        customDevice.update()
+        db.commit()
 
         '''auto update timerTrigger'''
         request.timerTrigger.index = request.index

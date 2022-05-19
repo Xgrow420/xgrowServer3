@@ -24,7 +24,7 @@ def getFan(index: int, currentUser: schemas.User, db: Session):
         return fan
 
 
-def setFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
+def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
     fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
                                       models.Fan.index == request.index)
 
@@ -44,9 +44,20 @@ def setFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Sessi
         db.commit()
         db.refresh(newFan)
         return 'created'
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"[!] Fan for user {currentUser.name} with index: {request.index} is already exists")
+
+
+def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
+    fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
+                                      models.Fan.index == request.index)
+
+    if not fan.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"[!] Fan for user {currentUser.name} with index {request.index} not found")
 
     else:
         fan.update(request.dict())
         db.commit()
         return 'updated'
-

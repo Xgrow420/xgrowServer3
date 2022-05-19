@@ -24,7 +24,7 @@ def getPot(index: int, currentUser: schemas.User, db: Session):
         return pot
 
 
-def setPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
+def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
     pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey,
                                       models.Pot.index == request.index)
 
@@ -48,6 +48,14 @@ def setPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Sessi
         db.commit()
         db.refresh(newPot)
         return 'created'
+
+def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
+    pot = db.query(models.Pot).filter(models.Pot.xgrowKey == currentUser.xgrowKey,
+                                          models.Pot.index == request.index)
+
+    if not pot.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"[!] Pot for user {currentUser.name} with index {request.index} not found")
 
     else:
         pot.update(request.dict())
