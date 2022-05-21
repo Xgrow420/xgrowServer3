@@ -66,6 +66,7 @@ class CustomDevice(BaseModel):
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
+    reversal: bool
     timerTrigger: TimerTriggerToModify
     class Config():
         orm_mode = True

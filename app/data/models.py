@@ -12,7 +12,7 @@ class Air(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
-
+    #device Section
     airTemperature = Column(Integer)
     airHumidity = Column(Integer)
 
@@ -26,6 +26,7 @@ class Pot(Base):
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
     # setObjectName = Column(String)
+    #device Section
     index = Column(Integer)
     active = Column(Boolean, default=False)  # bool
     pumpWorkingTimeLimit = Column(Integer)
@@ -46,6 +47,7 @@ class Fan(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
+    #device Section
     index = Column(Integer)
     active = Column(Boolean, default=False)
     working = Column(Boolean, default=False)
@@ -87,10 +89,12 @@ class CustomDevice(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
+    #device Section
     index = Column(Integer)
     active = Column(Boolean)
     deviceFunction = Column(String)  # SlotFunction.TIMER  ENUM TO DO
     working = Column(Boolean)
+    reversal = Column(Boolean)
 
     timerTrigger = relationship("TimerTrigger", back_populates="linkedDevice", uselist=False)
 
@@ -104,6 +108,7 @@ class TimerTrigger(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
+    #device Section
     index = Column(Integer)
     hourStart = Column(Integer)
     minuteStart = Column(Integer)
@@ -120,7 +125,9 @@ class AirSensorTrigger(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
+    #device Section
     index = Column(Integer)
     functionType = Column(String)
     value = Column(Integer)
     compensation = Column(Integer)
+    #end
