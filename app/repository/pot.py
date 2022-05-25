@@ -5,8 +5,6 @@ from app.schemas import schemas, schemasPot
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
-from app.xgrow import XgrowInstance
-from app.xgrow.Climate import Climate
 
 
 def getPots(currentUser: schemas.User, db: Session):

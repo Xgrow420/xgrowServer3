@@ -1,11 +1,10 @@
 from sqlalchemy.orm import Session
 
-from app.xgrow import XgrowInstance
+
 from app.data import models
 from app.schemas import schemas, schemasAir
 from fastapi import HTTPException, status
 
-from app.xgrow.Climate import Climate
 
 
 def getAir(currentUser: schemas.User, db: Session):

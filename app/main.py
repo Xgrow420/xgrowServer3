@@ -4,7 +4,6 @@ from app.data import models
 from app.data.database import engine
 from app.routers import air, customDevice, timerTrigger, endpointUtils
 from app.routers import fan, blog, authentication, user, pot
-from app.xgrow.XgrowInstance import XgrowInstance
 
 app = FastAPI()
 

@@ -5,6 +5,8 @@ from app.data import models
 from app.repository import timerTrigger
 from app.schemas import schemas, schemasCustomDevice
 
+import app.utils.stringUtils as stringUtils
+
 
 def getCustomDevices(currentUser: schemas.User, db: Session):
     # if currentUser.userType
@@ -58,7 +60,7 @@ def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
                             detail=f"TimerTrigger with index {request.index} not found")
     else:
         '''nie działa xD '''
-        #updatedCustomDevice = schemasCustomDevice.RawCustomDevice(request.dict())
+        customDevice = schemasCustomDevice.CustomDevice(request.dict())
         customDevice.update()
         db.commit()
 

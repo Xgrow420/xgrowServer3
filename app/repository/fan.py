@@ -4,9 +4,6 @@ from app.data import models
 from app.schemas import schemas, schemasFan
 from fastapi import HTTPException, status
 
-from app.xgrow.Climate import Climate
-from app.xgrow import XgrowInstance
-
 
 def getFans(currentUser: schemas.User, db: Session):
     fans = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey).all()

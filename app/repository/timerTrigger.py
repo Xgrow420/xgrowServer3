@@ -5,8 +5,6 @@ from app.schemas import schemas, schemasPot, schemasCustomDevice
 from fastapi import HTTPException, status
 from app.repository import customDevice
 
-from app.xgrow import XgrowInstance
-from app.xgrow.Climate import Climate
 
 
 def getTimerTriggers(currentUser: schemas.User, db: Session):
