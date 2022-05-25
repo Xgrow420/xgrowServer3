@@ -6,6 +6,7 @@ from app.repository import timerTrigger
 from app.schemas import schemas, schemasCustomDevice
 
 import app.utils.stringUtils as stringUtils
+from app.utils.schemasUtils import schemasUtils
 
 
 def getCustomDevices(currentUser: schemas.User, db: Session):
@@ -58,11 +59,7 @@ def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"TimerTrigger with index {request.index} not found")
     else:
-        '''nie działa xD '''
-        customDeviceDict = request.dict()
-        del customDeviceDict['timerTrigger']
-
-        customDevice.update(customDeviceDict)
+        customDevice.update(schemasUtils.filterUnableToSave(request.dict()))
 
         '''auto update timerTrigger'''
         request.timerTrigger.index = request.index
