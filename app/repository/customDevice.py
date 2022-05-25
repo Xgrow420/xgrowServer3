@@ -45,7 +45,6 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         db.refresh(newCustomDevice)
 
         '''auto create timerTrigger'''
-        request.timerTrigger.index = request.index
         timerTrigger.createTimerTrigger(request.timerTrigger, currentUser, db)
 
         return newCustomDevice
@@ -60,12 +59,14 @@ def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
                             detail=f"TimerTrigger with index {request.index} not found")
     else:
         '''nie działa xD '''
-        customDevice = schemasCustomDevice.CustomDevice(request.dict())
-        customDevice.update()
-        db.commit()
+        customDeviceDict = request.dict()
+        del customDeviceDict['timerTrigger']
+
+        customDevice.update(customDeviceDict)
 
         '''auto update timerTrigger'''
         request.timerTrigger.index = request.index
         timerTrigger.updateTimerTrigger(request.timerTrigger, currentUser, db)
 
+        db.commit()
         return 'updated'
