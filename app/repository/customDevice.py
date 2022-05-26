@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 from app.data import models
 from app.repository import timerTrigger
@@ -11,12 +11,12 @@ from app.utils.schemasUtils import schemasUtils
 
 def getCustomDevices(currentUser: schemas.User, db: Session):
     # if currentUser.userType
-    devices = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey).all()
+    devices: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey).all()
     return devices
 
 
 def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
-    device = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
+    device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
                                                   models.CustomDevice.index == index).first()
     if not device:
         # TO Do create mock slot db
@@ -27,7 +27,7 @@ def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
 
 
 def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
-    device = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
+    device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
                                                   models.CustomDevice.index == request.index)
 
     if device.first():
@@ -52,7 +52,7 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
 
 
 def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
-    customDevice = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
+    customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
                                                         models.CustomDevice.index == request.index)
 
     if not customDevice.first():

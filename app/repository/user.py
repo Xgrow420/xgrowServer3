@@ -1,5 +1,5 @@
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 from app.data import models
 from app import schemas
 from app.schemas import schemas
@@ -8,7 +8,7 @@ from app.security.hashing import Hash
 
 
 def createUser(request: schemas.User, db: Session):
-    user = db.query(models.User).filter(models.User.xgrowKey == request.xgrowKey)
+    user: Query = db.query(models.User).filter(models.User.xgrowKey == request.xgrowKey)
     if not user.first():
 
         #====== Device profile
@@ -30,7 +30,7 @@ def createUser(request: schemas.User, db: Session):
 
 def getDeviceData(userSchema: schemas.User, db: Session):
 
-    device = db.query(models.User).filter(models.User.name == userSchema.xgrowKey).first()
+    device: Query = db.query(models.User).filter(models.User.name == userSchema.xgrowKey).first()
 
     if not device:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -40,7 +40,7 @@ def getDeviceData(userSchema: schemas.User, db: Session):
 
 
 def show(id: int, db: Session):
-    user = db.query(models.User).filter(models.User.id == id).first()
+    user: Query = db.query(models.User).filter(models.User.id == id).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"User with the id {id} is not available")

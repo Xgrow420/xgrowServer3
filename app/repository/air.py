@@ -1,5 +1,4 @@
-from sqlalchemy.orm import Session
-
+from sqlalchemy.orm import Session, Query
 
 from app.data import models
 from app.schemas import schemas, schemasAir
@@ -8,12 +7,12 @@ from fastapi import HTTPException, status
 
 
 def getAir(currentUser: schemas.User, db: Session):
-    air = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey).first()
+    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey).first()
     return air
 
 
 def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
-    air = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey)
+    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey)
 
     if not air.first():
         newAir = models.Air(xgrowKey=currentUser.xgrowKey,
@@ -27,7 +26,7 @@ def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Se
 
 
 def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
-    air = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey)
+    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey)
 
     if not air.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

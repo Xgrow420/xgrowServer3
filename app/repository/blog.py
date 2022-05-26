@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 from app.data import models
 from app.schemas import schemasReport
 from fastapi import HTTPException, status
@@ -10,7 +10,7 @@ def get_all(db: Session):
 
 
 def create(request: schemasReport.Blog, db: Session):
-    new_blog = models.Blog(title=request.title, body=request.body, user_id=1)
+    new_blog: Query = models.Blog(title=request.title, body=request.body, user_id=1)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
@@ -18,7 +18,7 @@ def create(request: schemasReport.Blog, db: Session):
 
 
 def destroy(id: int, db: Session):
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
+    blog: Query = db.query(models.Blog).filter(models.Blog.id == id)
 
     if not blog.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -30,7 +30,7 @@ def destroy(id: int, db: Session):
 
 
 def update(id: int, request: schemasReport.Blog, db: Session):
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
+    blog: Query = db.query(models.Blog).filter(models.Blog.id == id)
 
     if not blog.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -43,7 +43,7 @@ def update(id: int, request: schemasReport.Blog, db: Session):
 
 
 def show(id: int, db: Session):
-    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    blog: Query = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Blog with the id {id} is not available")
