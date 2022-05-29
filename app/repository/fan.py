@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 from app.data import models
 from app.schemas import schemas, schemasFan
@@ -6,12 +6,12 @@ from fastapi import HTTPException, status
 
 
 def getFans(currentUser: schemas.User, db: Session):
-    fans = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey).all()
+    fans: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey).all()
     return fans
 
 
 def getFan(index: int, currentUser: schemas.User, db: Session):
-    fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
+    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
                                       models.Fan.index == index).first()
     if not fan:
         # TO Do create mock fan db
@@ -22,7 +22,7 @@ def getFan(index: int, currentUser: schemas.User, db: Session):
 
 
 def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
-    fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
+    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
                                       models.Fan.index == request.index)
 
     if not fan.first():
@@ -47,7 +47,7 @@ def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Se
 
 
 def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
-    fan = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
+    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
                                       models.Fan.index == request.index)
 
     if not fan.first():

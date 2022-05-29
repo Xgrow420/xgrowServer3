@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 from app.data import models
 from app.schemas import schemas, schemasPot
@@ -8,12 +8,12 @@ from app.utils.currentUserUtils import userUtils
 
 
 def getPots(currentUser: schemas.User, db: Session):
-    pots = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser)).all()
+    pots: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser)).all()
     return pots
 
 
 def getPot(index: int, currentUser: schemas.User, db: Session):
-    pot = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
+    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
                                       models.Pot.index == index).first()
     if not pot:
         # TO Do create mock fan db
@@ -24,7 +24,7 @@ def getPot(index: int, currentUser: schemas.User, db: Session):
 
 
 def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
-    pot = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
+    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
                                       models.Pot.index == request.index)
 
     if not pot.first():
@@ -53,7 +53,7 @@ def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Se
 
 
 def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
-    pot = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
+    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
                                       models.Pot.index == request.index)
 
     if not pot.first():
