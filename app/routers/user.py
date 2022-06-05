@@ -23,5 +23,5 @@ def get_user(id: int, db: Session = Depends(dataBase)):
     return user.show(id, db)
 
 @router.post('/getdevice', response_model=schemas.User)
-def getDeviceData(db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.get_current_user)):
+def getDeviceData(db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.getCurrentUser)):
     return user.getDeviceData(current_user, db)

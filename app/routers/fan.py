@@ -16,17 +16,17 @@ dataBase = database.getDataBase
 
 
 @router.get('/', response_model=List[schemasFan.FanToModify])
-def getFans(currentUser: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+def getFans(currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     return fan.getFans(currentUser, db)
 
 @router.get('/{index}', response_model=schemasFan.FanToModify)
-def getFan(index: int, currentUser: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+def getFan(index: int, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     return fan.getFan(index, currentUser, db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def createFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+def createFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     fan.createFan(request, currentUser, db)
 
 @router.put('/', status_code=status.HTTP_201_CREATED)
-def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.get_current_user), db: Session = Depends(dataBase)):
+def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     fan.updateFan(request, currentUser, db)
