@@ -39,7 +39,7 @@ html = """
             const websocketfun = () => {
                 let csrf_token = getCookie("csrf_access_token")
 
-                let ws = new WebSocket(`ws://192.168.18.202:8000/ws?csrf_token=${csrf_token}`)
+                let ws = new WebSocket(`ws://127.0.0.1:8000/webSocketAuth/ws?csrf_token=${csrf_token}`)
                 ws.onmessage = (event) => {
                     let messages = document.getElementById('messages')
                     let message = document.createElement('li')
@@ -69,7 +69,7 @@ async def websocket(websocket: WebSocket, csrf_token: str = Query(...), Authoriz
         decoded_token = Authorize.get_raw_jwt()
         await websocket.send_text(f"Here your decoded token: {decoded_token}")
     except AuthJWTException as err:
-        await websocket.send_text(err.__str__())
+        await websocket.send_text(f"not auth: {err}")
         await websocket.close()
 
 @router.get('/get-cookie')
