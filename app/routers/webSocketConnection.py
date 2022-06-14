@@ -36,7 +36,7 @@ html = """
             document.querySelector("#ws-id").textContent = client_id;
             let csrf_token = getCookie("csrf_access_token")
             
-            var ws = new WebSocket(`ws://127.0.0.1:8000/webSocketConnection/?csrf_token=${csrf_token}`);
+            var ws = new WebSocket(`ws://127.0.0.1:8000/webSocketConnection/?csrf_token=${csrf_token}&client_id=${client_id}`);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -83,13 +83,12 @@ async def get():
     return HTMLResponse(html)
 
 
-@router.websocket("/{csrf_token}")
-async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = Query(...), Authorize: AuthJWT = Depends()):
-    print("run...")
+@router.websocket("/")
+async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client_id: str = "empty", Authorize: AuthJWT = Depends()):
     await manager.connect(websocket)
-    print("run2")
+    print(client_id)
     try:
-        Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf_token)
+        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf_token)
     except AuthJWTException:
         await websocket.close()
 
