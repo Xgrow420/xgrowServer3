@@ -1,7 +1,9 @@
 from typing import List
 
-from fastapi import WebSocket, WebSocketDisconnect, APIRouter
+from fastapi import WebSocket, WebSocketDisconnect, APIRouter, Query, Depends
 from fastapi.responses import HTMLResponse
+from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AuthJWTException
 
 router = APIRouter(
     prefix="/webSocketConnection",
@@ -24,9 +26,17 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
+            const getCookie = (name) => {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        
             var client_id = Date.now()
             document.querySelector("#ws-id").textContent = client_id;
-            var ws = new WebSocket(`ws://localhost:8000/webSocketConnection/${client_id}`);
+            let csrf_token = getCookie("csrf_access_token")
+            
+            var ws = new WebSocket(`ws://127.0.0.1:8000/webSocketConnection/?csrf_token=${csrf_token}`);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -73,14 +83,21 @@ async def get():
     return HTMLResponse(html)
 
 
-@router.websocket("/{client_id}")
-async def web_socket_endpoint(web_socket: WebSocket, client_id: int):
-    await manager.connect(web_socket)
+@router.websocket("/{csrf_token}")
+async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = Query(...), Authorize: AuthJWT = Depends()):
+    print("run...")
+    await manager.connect(websocket)
+    print("run2")
+    try:
+        Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf_token)
+    except AuthJWTException:
+        await websocket.close()
+
     try:
         while True:
-            data = await web_socket.receive_text()
-            await manager.send_personal_message(f"You wrote: {data}", web_socket)
-            await manager.broadcast(f"Client #{client_id} says: {data}")
+            data = await websocket.receive_text()
+            await manager.send_personal_message(f"You wrote: {data}", websocket)
+            await manager.broadcast(f"Client {Authorize.get_jwt_subject()} says: {data}")
     except WebSocketDisconnect:
-        manager.disconnect(web_socket)
-        await manager.broadcast(f"Client #{client_id} left the chat")
+        manager.disconnect(websocket)
+        await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")

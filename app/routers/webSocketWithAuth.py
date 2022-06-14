@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import FastAPI, WebSocket, Depends, Query, APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi_jwt_auth import AuthJWT
@@ -9,11 +11,9 @@ router = APIRouter(
     tags=['WebSocket Auth']
 )
 
-
 class Settingss(BaseModel):
     authjwt_secret_key: str = "secret"
     authjwt_token_location: set = {"cookies"}
-
 
 @AuthJWT.load_config
 def get_config():
@@ -56,16 +56,39 @@ html = """
 """
 
 
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+
+
+manager = ConnectionManager()
+
+
+
 @router.get("/")
 async def get():
     return HTMLResponse(html)
 
-
 @router.websocket('/ws')
 async def websocket(websocket: WebSocket, csrf_token: str = Query(...), Authorize: AuthJWT = Depends()):
-    await websocket.accept()
+    await manager.connect(websocket)
+    print("run")
     try:
-        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf_token)
+        Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf_token)
         # Authorize.jwt_optional("websocket",websocket=websocket,csrf_token=csrf_token)
         # Authorize.jwt_refresh_token_required("websocket",websocket=websocket,csrf_token=csrf_token)
         # Authorize.fresh_jwt_required("websocket",websocket=websocket,csrf_token=csrf_token)
@@ -76,12 +99,3 @@ async def websocket(websocket: WebSocket, csrf_token: str = Query(...), Authoriz
         await websocket.send_text(f"not auth: {err}")
         await websocket.close()
 
-
-@router.get('/get-cookie')
-def get_cookie(Authorize: AuthJWT = Depends()):
-    access_token = Authorize.create_access_token(subject='test', fresh=True)
-    refresh_token = Authorize.create_refresh_token(subject='test')
-
-    Authorize.set_access_cookies(access_token)
-    Authorize.set_refresh_cookies(refresh_token)
-    return {"msg": "Successfully login"}

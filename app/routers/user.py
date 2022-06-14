@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
+from fastapi import APIRouter
 from app.data import database
-from app.repository import user
-from app.schemas import schemas
 from app.security import oauth2
+from app.schemas import schemas
+from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, status
+from app.repository import user
 
 router = APIRouter(
     prefix="/user",
@@ -22,6 +22,6 @@ def create_user(request: schemas.User, db: Session = Depends(dataBase)):
 def get_user(id: int, db: Session = Depends(dataBase)):
     return user.show(id, db)
 
-@router.get('/device', response_model=schemas.User)
+@router.post('/getdevice', response_model=schemas.User)
 def getDeviceData(db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.getCurrentUser)):
     return user.getDeviceData(current_user, db)
