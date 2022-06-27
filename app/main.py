@@ -3,11 +3,12 @@ from fastapi import FastAPI
 
 from app.data import models
 from app.data.database import engine
-from app.routers import air, customDevice, timerTrigger, endpointUtils, webSocketWithAuth
-from app.routers import fan, blog, authentication, user, pot, webSocketConnection
+from app.restApi.routers import customDevice, endpointUtils, webSocketWithAuth, pot, user, authentication, blog
+from app.websocket.routers import webSocketConnection
+from app.restApi.routers import timerTrigger, air, fan
 
-HOST_LOCATION = "127.0.0.1"
-PORT = "8000"
+HOST_LOCATION = '127.0.0.1'
+PORT = 8000
 
 app = FastAPI()
 

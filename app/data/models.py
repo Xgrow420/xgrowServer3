@@ -41,7 +41,6 @@ class Pot(Base):
     wateringCycleTimeInHour = Column(Integer)
     manualWateredInSecond = Column(Integer)
 
-
 class Fan(Base):
     __tablename__ = 'fan'
 

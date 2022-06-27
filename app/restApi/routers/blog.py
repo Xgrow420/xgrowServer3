@@ -1,10 +1,10 @@
 from typing import List
-from fastapi import APIRouter, Depends, status, HTTPException
-from app.data import database, models
+from fastapi import APIRouter, Depends, status
+from app.data import database
 from app.security import oauth2
 from app.schemas import schemas, schemasReport
 from sqlalchemy.orm import Session
-from app.repository import blog
+from app.restApi.repository import blog
 
 router = APIRouter(
     prefix="/blogs",

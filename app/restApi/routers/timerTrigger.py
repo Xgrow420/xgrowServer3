@@ -1,11 +1,10 @@
 from typing import List
-from fastapi import APIRouter, Depends, status, HTTPException
-from app.data import database, models
+from fastapi import APIRouter, Depends, status
+from app.data import database
 from app.security import oauth2
-from app import schemas
-from app.schemas import schemas, schemasPot, schemasCustomDevice
+from app.schemas import schemas, schemasCustomDevice
 from sqlalchemy.orm import Session
-from app.repository import pot, timerTrigger
+from app.restApi.repository import timerTrigger
 
 router = APIRouter(
     prefix="/timerTrigger",
@@ -17,7 +16,7 @@ dataBase = database.getDataBase
 
 @router.get('/', response_model=List[schemasCustomDevice.TimerTriggerToModify])
 def getAllTimerTrigger(current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return timerTrigger.getTimerTriggers(current_user,db)
+    return timerTrigger.getTimerTriggers(current_user, db)
 
 @router.get('/{index}', response_model=schemasCustomDevice.TimerTriggerToModify)
 def getTimerTrigger(index: int, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):

@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session, Query
 
 from app.data import models
-from app.schemas import schemas, schemasPot, schemasCustomDevice
+from app.schemas import schemas, schemasCustomDevice
 from fastapi import HTTPException, status
-from app.repository import customDevice
+from app.restApi.repository import customDevice
 
 
 

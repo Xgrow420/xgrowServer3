@@ -1,11 +1,9 @@
-from typing import List
-from fastapi import APIRouter, Depends, status, HTTPException
-from app.data import database, models
+from fastapi import APIRouter, Depends, status
+from app.data import database
 from app.security import oauth2
-from app import schemas
 from app.schemas import schemas, schemasAir
 from sqlalchemy.orm import Session
-from app.repository import air
+from app.restApi.repository import air
 
 router = APIRouter(
     prefix="/air",

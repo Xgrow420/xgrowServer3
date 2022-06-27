@@ -2,10 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session, Query
 
 from app.data import models
-from app.repository import timerTrigger
+from app.restApi.repository import timerTrigger
 from app.schemas import schemas, schemasCustomDevice
 
-import app.utils.stringUtils as stringUtils
 from app.utils.schemasUtils import schemasUtils
 
 

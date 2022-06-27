@@ -2,6 +2,14 @@ import ast
 
 from enum import Enum
 
+from fastapi import Query
+from sqlalchemy.orm import Session
+from app.schemas import schemas
+from app.utils.currentUserUtils import userUtils
+
+
+from app.data import models
+
 
 class DeviceFunction(Enum):
     TIMER = 1
@@ -17,6 +25,12 @@ def convertListToString(list: list):
 def convertStringToList(string: str):
     return ast.literal_eval(string)
 
+
+
+async def getUserSchemaFromName(userName, db: Session):
+
+    user: schemas.User = db.query(models.User).filter(models.User.name == userName).first()
+    return user
 
 class deviceFunctionUtils():
 
