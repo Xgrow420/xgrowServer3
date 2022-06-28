@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, Query
 from app.data import models
 from app.schemas import schemas, schemasPot
 from fastapi import HTTPException, status
+from app.websocket.routers.webSocketConnection import getConnectionManager
 
 from app.utils.currentUserUtils import userUtils
 
@@ -23,12 +24,13 @@ def getPot(index: int, currentUser: schemas.User, db: Session):
         return pot
 
 
-def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
-    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
+async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                       models.Pot.index == request.index)
 
     if not pot.first():
-        newPot = models.Pot(xgrowKey=currentUser.xgrowKey,
+        newPot = models.Pot(xgrowKey=xgrowKey,
                             index=request.index,
                             active=request.active,
                             pumpWorkingTimeLimit=request.pumpWorkingTimeLimit,
@@ -46,14 +48,16 @@ def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Se
         db.add(newPot)
         db.commit()
         db.refresh(newPot)
+        await getConnectionManager().sendMessageToDevice("Pobierz Pot", xgrowKey)
         return 'created'
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"[!] Pot for user {currentUser.name} with index {request.index} already exists!")
 
 
-def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
-    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
+async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                       models.Pot.index == request.index)
 
     if not pot.first():
@@ -63,4 +67,5 @@ def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Se
     else:
         pot.update(request.dict())
         db.commit()
+        await getConnectionManager().sendMessageToDevice("Pobierz Pot", xgrowKey)
         return 'updated'

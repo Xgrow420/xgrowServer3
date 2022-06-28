@@ -23,9 +23,9 @@ def getPot(index: int, current_user: schemas.User = Depends(oauth2.getCurrentUse
     return pot.getPot(index, current_user, db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def setPot(request: schemasPot.PotToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return pot.createPot(request, current_user, db)
+async def setPot(request: schemasPot.PotToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await pot.createPot(request, current_user, db)
 
 @router.put('/', status_code=status.HTTP_201_CREATED)
-def setPot(request: schemasPot.PotToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return pot.updatePot(request, current_user, db)
+async def setPot(request: schemasPot.PotToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await pot.updatePot(request, current_user, db)

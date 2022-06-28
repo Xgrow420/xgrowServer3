@@ -65,6 +65,7 @@ html = """
 </html>
 """
 
+
 class Connection:
     def __init__(self, websocket: WebSocket, xgrowKey=None):
         self._webSocket: WebSocket = websocket
@@ -72,6 +73,7 @@ class Connection:
 
     def getWebSocket(self):
         return self._webSocket
+
     def setWebSocket(self, websocket: WebSocket):
         self._webSocket = websocket
 
@@ -84,6 +86,7 @@ class Connection:
     def getConnectionByWebSocket(self, websocket: WebSocket):
         if websocket == self._webSocket:
             return websocket
+
 
 class ConnectionManager:
     def __init__(self):
@@ -100,7 +103,6 @@ class ConnectionManager:
                 print(f"{connection.getXgrowKey()} disconnected")
                 self.active_connections.remove(connection)
 
-
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
@@ -108,9 +110,14 @@ class ConnectionManager:
         for connection in self.active_connections:
             if connection.getXgrowKey() == xgrowKey:
                 await connection.getWebSocket().send_text(message)
+    # TODO: add if statment connection not found info
 
 
 manager = ConnectionManager()
+
+
+def getConnectionManager():
+    return manager
 
 
 @router.get("/")
@@ -119,8 +126,8 @@ async def get():
 
 
 @router.websocket("/")
-async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client_id: str = "empty", Authorize: AuthJWT = Depends(), db: Session = Depends(dataBase)):
-
+async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client_id: str = "empty",
+                              Authorize: AuthJWT = Depends(), db: Session = Depends(dataBase)):
     await websocket.accept()
 
     try:
@@ -142,7 +149,6 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
                 await manager.send_personal_message(f"Client {xgrowKey}", websocket)
         except WebSocketDisconnect:
             manager.disconnect(websocket)
-            #await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
+            # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
     except AuthJWTException:
         await websocket.close()
-
