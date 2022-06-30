@@ -12,6 +12,7 @@ class TimerTrigger(BaseModel):
     hourStop: int
     minuteStop: int
     lightCycle: int
+    timerType: str
 
 
     class Config():
@@ -25,6 +26,7 @@ class TimerTriggerToModify(BaseModel):
     hourStop: int
     minuteStop: int
     lightCycle: int
+    timerType: str
 
     class Config():
         orm_mode = True
@@ -70,6 +72,7 @@ class CustomDevice(BaseModel):
     working: bool
     reversal: bool
     timerTrigger: TimerTriggerToModify
+    airSensorTrigger: AirSensorTriggerToModify
     class Config():
         orm_mode = True
 
@@ -81,6 +84,7 @@ class CustomDeviceToModify(BaseModel):
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
     timerTrigger: TimerTriggerToModify
+    airSensorTrigger: AirSensorTriggerToModify
     class Config():
         orm_mode = True
 

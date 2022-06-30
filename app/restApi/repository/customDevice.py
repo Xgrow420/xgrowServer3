@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session, Query
 
 from app.data import models
-from app.restApi.repository import timerTrigger
+from app.restApi.repository import timerTrigger, airSensorTrigger
 from app.schemas import schemas, schemasCustomDevice
 
 from app.utils.schemasUtils import schemasUtils
@@ -20,7 +20,7 @@ def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
     if not device:
         # TO Do create mock slot db
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Slot with id {index} not found")
+                            detail=f"CustomDevice with id {index} not found")
     else:
         return device
 
@@ -45,7 +45,11 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         db.refresh(newCustomDevice)
 
         '''auto create timerTrigger'''
+        request.timerTrigger.index = request.index
         timerTrigger.createTimerTrigger(request.timerTrigger, currentUser, db)
+
+        request.airSensorTrigger.index = request.index
+        airSensorTrigger.createAirSensorTrigger(request.airSensorTrigger, currentUser, db)
 
         return newCustomDevice
 
@@ -63,6 +67,9 @@ def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         '''auto update timerTrigger'''
         request.timerTrigger.index = request.index
         timerTrigger.updateTimerTrigger(request.timerTrigger, currentUser, db)
+
+        request.airSensorTrigger.index = request.index
+        airSensorTrigger.updateAirSensorTrigger(request.airSensorTrigger, currentUser, db)
 
         db.commit()
         return 'updated'

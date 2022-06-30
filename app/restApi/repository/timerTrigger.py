@@ -38,6 +38,7 @@ def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, curren
                 hourStop=request.hourStop,
                 minuteStop=request.minuteStop,
                 lightCycle=request.lightCycle,
+                timerType=request.timerType,
                 customDevice_id=cD.id)
             db.add(newTimerTrigger)
             db.commit()

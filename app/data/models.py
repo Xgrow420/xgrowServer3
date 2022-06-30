@@ -96,6 +96,7 @@ class CustomDevice(Base):
     reversal = Column(Boolean)
 
     timerTrigger = relationship("TimerTrigger", back_populates="linkedDevice", uselist=False)
+    airSensorTrigger = relationship("AirSensorTrigger", back_populates="linkedDevice", uselist=False)
 
     # TO DO timer = Column(Boolean)
     # triggerThreshold =
@@ -114,6 +115,7 @@ class TimerTrigger(Base):
     hourStop = Column(Integer)
     minuteStop = Column(Integer)
     lightCycle = Column(Integer)
+    timerType = Column(String) #Enum
 
     customDevice_id = Column(Integer, ForeignKey('customDevice.id'))
     linkedDevice = relationship('CustomDevice', back_populates="timerTrigger")
@@ -129,4 +131,7 @@ class AirSensorTrigger(Base):
     functionType = Column(String)
     value = Column(Integer)
     compensation = Column(Integer)
+
+    customDevice_id = Column(Integer, ForeignKey('customDevice.id'))
+    linkedDevice = relationship('CustomDevice', back_populates="airSensorTrigger")
     #end
