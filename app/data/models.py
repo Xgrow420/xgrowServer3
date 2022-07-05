@@ -29,17 +29,17 @@ class Pot(Base):
     #device Section
     index = Column(Integer)
     active = Column(Boolean, default=False)  # bool
-    pumpWorkingTimeLimit = Column(Integer)
+    manualWateringTimeLimit = Column(Integer)
     autoWateringFunction = Column(Boolean, default=False)  # bool
     pumpWorkStatus = Column(Boolean, default=False)  # bool
     lastWateredCycleTime = Column(Integer) #timestamp int
     currentSoilMoisture = Column(Integer)
-    minimalHumidity = Column(Integer)
-    maxSensorHumidityOutput = Column(Integer)
-    minSensorHumidityOutput = Column(Integer)
-    pumpWorkingTime = Column(Integer)
-    wateringCycleTimeInHour = Column(Integer)
-    manualWateredInSecond = Column(Integer)
+    minMoisture = Column(Integer)
+    maxSensorMoistureOutput = Column(Integer)
+    minSensorMoistureOutput = Column(Integer)
+    automaticWateringTime = Column(Integer)
+    automaticWateringCycleDuration = Column(Integer)
+    manualWateringTime = Column(Integer)
 
 class Fan(Base):
     __tablename__ = 'fan'

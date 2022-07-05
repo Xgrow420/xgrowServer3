@@ -53,10 +53,10 @@ Table pots {
   maxHumidity float
 
   pumpWorking bool
-  pumpWorkingTime int
+  automaticWateringTime int
   pumpWorkingTimeLimit int
   wateringCycleTimeInHour int
-  manualWateredInSecond int
+  manualWateringTime int
 
   stats pot_stats
 }

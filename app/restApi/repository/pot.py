@@ -33,17 +33,17 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         newPot = models.Pot(xgrowKey=xgrowKey,
                             index=request.index,
                             active=request.active,
-                            pumpWorkingTimeLimit=request.pumpWorkingTimeLimit,
+                            manualWateringTimeLimit=request.manualWateringTimeLimit,
                             autoWateringFunction=request.autoWateringFunction,
                             pumpWorkStatus=request.pumpWorkStatus,
                             lastWateredCycleTime=request.lastWateredCycleTime,
                             currentSoilMoisture=request.currentSoilMoisture,
-                            minimalHumidity=request.minimalHumidity,
-                            maxSensorHumidityOutput=request.maxSensorHumidityOutput,
-                            minSensorHumidityOutput=request.minSensorHumidityOutput,
-                            pumpWorkingTime=request.pumpWorkingTime,
-                            wateringCycleTimeInHour=request.wateringCycleTimeInHour,
-                            manualWateredInSecond=request.manualWateredInSecond
+                            minMoisture=request.minMoisture,
+                            maxSensorMoistureOutput=request.maxSensorMoistureOutput,
+                            minSensorMoistureOutput=request.minSensorMoistureOutput,
+                            automaticWateringTime=request.automaticWateringTime,
+                            automaticWateringCycleDuration=request.automaticWateringCycleDuration,
+                            manualWateringTime=request.manualWateringTime
                             )
         db.add(newPot)
         db.commit()

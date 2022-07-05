@@ -8,17 +8,17 @@ class Pot(BaseModel):
     # setObjectName = Column(String)
     index: int
     active: bool  # bool
-    pumpWorkingTimeLimit: int
+    manualWateringTimeLimit: int
     autoWateringFunction: bool  # bool
     pumpWorkStatus: bool  # bool
     lastWateredCycleTime: int
     currentSoilMoisture: int
-    minimalHumidity: int
-    maxSensorHumidityOutput: int
-    minSensorHumidityOutput: int
-    pumpWorkingTime: int
-    wateringCycleTimeInHour: int
-    manualWateredInSecond: int
+    minMoisture: int
+    maxSensorMoistureOutput: int
+    minSensorMoistureOutput: int
+    automaticWateringTime: int
+    automaticWateringCycleDuration: int
+    manualWateringTime: int
 
     class Config():
         orm_mode = True
@@ -29,17 +29,17 @@ class PotToModify(BaseModel):
     # setObjectName = Column(String)
     index: int
     active: bool  # bool
-    pumpWorkingTimeLimit: int
+    manualWateringTimeLimit: int
     autoWateringFunction: bool  # bool
     pumpWorkStatus: bool  # bool
     lastWateredCycleTime: int
     currentSoilMoisture: int
-    minimalHumidity: int
-    maxSensorHumidityOutput: int
-    minSensorHumidityOutput: int
-    pumpWorkingTime: int
-    wateringCycleTimeInHour: int
-    manualWateredInSecond: int
+    minMoisture: int
+    maxSensorMoistureOutput: int
+    minSensorMoistureOutput: int
+    automaticWateringTime: int
+    automaticWateringCycleDuration: int
+    manualWatering: int
 
     class Config():
         orm_mode = True
