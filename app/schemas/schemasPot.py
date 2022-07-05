@@ -11,8 +11,8 @@ class Pot(BaseModel):
     pumpWorkingTimeLimit: int
     autoWateringFunction: bool  # bool
     pumpWorkStatus: bool  # bool
-    # lastWateredCycleTime = datetime.now()
-    sensorOutput: int
+    lastWateredCycleTime: int
+    currentSoilMoisture: int
     minimalHumidity: int
     maxSensorHumidityOutput: int
     minSensorHumidityOutput: int
@@ -32,8 +32,8 @@ class PotToModify(BaseModel):
     pumpWorkingTimeLimit: int
     autoWateringFunction: bool  # bool
     pumpWorkStatus: bool  # bool
-    # lastWateredCycleTime = datetime.now()
-    sensorOutput: int
+    lastWateredCycleTime: int
+    currentSoilMoisture: int
     minimalHumidity: int
     maxSensorHumidityOutput: int
     minSensorHumidityOutput: int

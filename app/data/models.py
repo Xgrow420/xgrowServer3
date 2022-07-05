@@ -32,8 +32,8 @@ class Pot(Base):
     pumpWorkingTimeLimit = Column(Integer)
     autoWateringFunction = Column(Boolean, default=False)  # bool
     pumpWorkStatus = Column(Boolean, default=False)  # bool
-    # lastWateredCycleTime = datetime.now()
-    sensorOutput = Column(Integer)
+    lastWateredCycleTime = Column(Integer) #timestamp int
+    currentSoilMoisture = Column(Integer)
     minimalHumidity = Column(Integer)
     maxSensorHumidityOutput = Column(Integer)
     minSensorHumidityOutput = Column(Integer)
