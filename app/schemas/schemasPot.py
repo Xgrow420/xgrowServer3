@@ -39,7 +39,7 @@ class PotToModify(BaseModel):
     minSensorMoistureOutput: int
     automaticWateringTime: int
     automaticWateringCycleDuration: int
-    manualWatering: int
+    manualWateringTime: int
 
     class Config():
         orm_mode = True
