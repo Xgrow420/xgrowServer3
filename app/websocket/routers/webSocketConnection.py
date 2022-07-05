@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.schemas import schemas, schemasPot
 from app.data import database
+from app.schemas.schemas import Settings
 from app.utils.currentUserUtils import userUtils
 import app.utils.stringUtils as stringUtils
 
@@ -112,6 +113,9 @@ class ConnectionManager:
                 await connection.getWebSocket().send_text(message)
     # TODO: add if statment connection not found info
 
+@AuthJWT.load_config
+def get_config():
+    return Settings()
 
 manager = ConnectionManager()
 
