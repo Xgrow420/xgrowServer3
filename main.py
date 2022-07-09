@@ -28,6 +28,11 @@ app.include_router(webSocketConnection.router)
 app.include_router(airSensorTrigger.router)
 
 
+@app.get('/status')
+def get_status():
+    return 'chuj'
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST_LOCATION, port=PORT)
 

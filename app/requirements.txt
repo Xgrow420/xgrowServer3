@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-sqlalchemy
-passlib
-bcrypt
-python-jose
-python-multipart
-websockets
-fastapi-jwt-auth
