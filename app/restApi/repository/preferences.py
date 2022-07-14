@@ -34,7 +34,7 @@ def createPreferences(request: schemasPreferences.PreferencesToModify, currentUs
 
 
 def updatePreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
-    preferences: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == currentUser.xgrowKey)
+    preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == currentUser.xgrowKey)
 
     if not preferences.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

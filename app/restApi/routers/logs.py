@@ -14,14 +14,14 @@ router = APIRouter(
 dataBase = database.getDataBase
 
 
-@router.get('/', response_model=List[schemasLogs.LogsToModify])
+@router.get('/', response_model=schemasLogs.LogsToModify)
 def getSensors(current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     return logs.getLogs(current_user,db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def createSensors(request: schemasLogs.LogsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+def createSensors(request: schemasLogs.LogsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     return logs.createLogs(request,current_user,db)
 
 @router.put('/', status_code=status.HTTP_201_CREATED)
-async def updateSensors(request: schemasLogs.LogsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+def updateSensors(request: schemasLogs.LogsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     return logs.updateLogs(request, current_user, db)

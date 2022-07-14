@@ -20,7 +20,7 @@ def getSensors(currentUser: schemas.User, db: Session):
         return sensors
 
 
-async def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
+def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
 
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
@@ -42,7 +42,7 @@ async def createSensors(request: schemasSensors.SensorsToModify, currentUser: sc
                             detail=f"[!] Sensors already exists!")
 
 
-async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
+def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
 
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
