@@ -5,7 +5,7 @@ from app import schemas
 from app.schemas import schemas
 from fastapi import HTTPException, status
 from app.security.hashing import Hash
-
+from app.restApi.repository import preferences
 
 def createUser(request: schemas.User, db: Session):
     user: Query = db.query(models.User).filter(models.User.xgrowKey == request.xgrowKey)
@@ -37,6 +37,14 @@ def getDeviceData(userSchema: schemas.User, db: Session):
                             detail=f"User {userSchema.name} do not have device! ERROR")
     return device
 
+def getUser(current_user: schemas.User, db: Session):
+
+    user: Query = db.query(models.User).filter(models.User.name == current_user.name).first()
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"User not found fatal ERROR")
+    return user
 
 
 def show(id: int, db: Session):

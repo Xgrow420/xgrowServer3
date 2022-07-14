@@ -3,8 +3,8 @@ from fastapi import FastAPI
 
 from app.data import models
 from app.data.database import engine
-from app.restApi.routers import customDevice, endpointUtils, pot, user, authentication, blog, \
-    airSensorTrigger
+from app.restApi.routers import customDevice, endpointUtils, pot, user, authentication, preferences, \
+    airSensorTrigger, logs, sensors
 from app.websocket.routers import webSocketConnection
 from app.restApi.routers import timerTrigger, air, fan
 
@@ -16,7 +16,9 @@ app = FastAPI()
 models.Base.metadata.create_all(engine)
 
 app.include_router(authentication.router)
-app.include_router(blog.router)
+app.include_router(preferences.router)
+app.include_router(logs.router)
+app.include_router(sensors.router)
 app.include_router(user.router)
 app.include_router(pot.router)
 app.include_router(fan.router)

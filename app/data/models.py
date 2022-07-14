@@ -58,15 +58,18 @@ class Fan(Base):
     temperatureStatus = Column(Integer)  # ENUM <=========
 
 
-class Blog(Base):
-    __tablename__ = 'blogs'
+class Preferences(Base):
+    __tablename__ = 'preferences'
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String)
-    body = Column(String)
-    user_id = Column(Integer, ForeignKey('users.id'))
+    xgrowKey = Column(String)
 
-    creator = relationship("User", back_populates="blogs")
+    language = Column(String)
+    temperatureFormat = Column(String)
+    dateFormat = Column(String)
+
+    #user_id = Column(Integer, ForeignKey('users.id'))
+    #creator = relationship("User", back_populates="preferences")
 
 
 class User(Base):
@@ -80,7 +83,7 @@ class User(Base):
 
     # PotList = Column(List)
 
-    blogs = relationship("Blog", back_populates="creator")
+    #preferences = relationship("Preferences", back_populates="creator")
 
 
 class CustomDevice(Base):
@@ -135,3 +138,37 @@ class AirSensorTrigger(Base):
     customDevice_id = Column(Integer, ForeignKey('customDevice.id'))
     linkedDevice = relationship('CustomDevice', back_populates="airSensorTrigger")
     #end
+
+class Sensors(Base):
+    __tablename__ = 'sensors'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    #device Section
+    airTemperature = Column(Integer)
+    airHumidity = Column(Integer)
+    potsMoistureList = Column(String)
+    camera = Column(String)
+
+
+
+class Logs(Base):
+    __tablename__ = 'logs'
+
+    id = Column(Integer, primary_key=True, index=True)
+    xgrowKey = Column(String)
+    #device Section
+
+    airTemperatureLogList = Column(String)
+    airHumidityLogList = Column(String)
+    timeLogList = Column(String)
+
+    pot1MoistureLogList = Column(String)
+    pot2MoistureLogList = Column(String)
+    pot3MoistureLogList = Column(String)
+    pot4MoistureLogList = Column(String)
+    pot5MoistureLogList = Column(String)
+    pot6MoistureLogList = Column(String)
+    pot7MoistureLogList = Column(String)
+    pot8MoistureLogList = Column(String)
+
