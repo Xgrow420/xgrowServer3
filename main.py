@@ -1,8 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
 
-from app.data import models
-from app.data.database import engine
 from app.restApi.routers import customDevice, endpointUtils, pot, user, authentication, preferences, \
     airSensorTrigger, logs, sensors
 from app.websocket.routers import webSocketConnection
@@ -13,7 +11,7 @@ PORT = 8000
 
 app = FastAPI()
 
-models.Base.metadata.create_all(engine)
+#models.Base.metadata.create_all(engine)
 
 app.include_router(authentication.router)
 app.include_router(preferences.router)
