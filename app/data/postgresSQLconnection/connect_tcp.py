@@ -27,11 +27,11 @@ def connect_tcp_socket() -> sqlalchemy.engine.base.Engine:
     # secure - consider a more secure solution such as
     # Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
     # keep secrets safe.
-    db_host = os.environ["146.148.21.210"]  # e.g. '127.0.0.1' ('172.17.0.1' if deployed to GAE Flex)
-    db_user = os.environ["xgrowdb"]  # e.g. 'my-db-user'
-    db_pass = os.environ["chuj"]  # e.g. 'my-db-password'
-    db_name = os.environ["xgrowdb"]  # e.g. 'my-database'
-    db_port = os.environ["5432"]  # e.g. 5432
+    db_host = "146.148.21.210"  # e.g. '127.0.0.1' ('172.17.0.1' if deployed to GAE Flex)
+    db_user = "xgrowdb"  # e.g. 'my-db-user'
+    db_pass = "chuj"  # e.g. 'my-db-password'
+    db_name = "xgrowdb"  # e.g. 'my-database'
+    db_port = "5432"  # e.g. 5432
 
     connect_args = {}
     # [END cloud_sql_postgres_sqlalchemy_connect_tcp]

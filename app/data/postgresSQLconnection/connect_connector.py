@@ -29,10 +29,10 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     # Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
     # keep secrets safe.
 
-    instance_connection_name = os.environ['xgrow-server:europe-west1:xgrow-database']  # e.g. 'project:region:instance'
-    db_user = os.environ['xgrowdb']  # e.g. 'my-db-user'
-    db_pass = os.environ['chuj']  # e.g. 'my-db-password'
-    db_name = os.environ['xgrowdb']  # e.g. 'my-database'
+    instance_connection_name = 'xgrow-server:europe-west1:xgrow-database'  # e.g. 'project:region:instance'
+    db_user = 'xgrowdb'  # e.g. 'my-db-user'
+    db_pass = 'chuj' # e.g. 'my-db-password'
+    db_name = 'xgrowdb'  # e.g. 'my-database'
 
     ip_type = IPTypes.PRIVATE if os.environ.get("PRIVATE_IP") else IPTypes.PUBLIC
 
