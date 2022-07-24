@@ -3,6 +3,7 @@ from fastapi import FastAPI
 
 from app.data import models
 from app.data.postgresSQLconnection.connect_connector import connect_with_connector
+from app.data.postgresSQLconnection.standard import standard_connect
 from app.restApi.routers import customDevice, endpointUtils, pot, user, authentication, preferences, \
     airSensorTrigger, logs, sensors
 from app.websocket.routers import webSocketConnection
@@ -14,7 +15,11 @@ PORT = 8000
 app = FastAPI()
 
 models.Base.metadata.create_all(connect_with_connector())
-
+''' 
+    for deploy plz use connect_with_connector() in 
+    models.Base.metadata.create_all(),
+    for localhost use: standard_connect()
+'''
 app.include_router(authentication.router)
 app.include_router(preferences.router)
 app.include_router(logs.router)

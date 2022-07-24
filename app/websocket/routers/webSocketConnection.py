@@ -47,7 +47,7 @@ html = """
             document.querySelector("#ws-id").textContent = client_id;
             let csrf_token = getCookie("csrf_access_token")
             
-            var ws = new WebSocket(`ws://127.0.0.1:8000/webSocketConnection/?csrf_token=${csrf_token}&client_id=${client_id}`);
+            var ws = new WebSocket(`ws://xgrow.pl/webSocketConnection/?csrf_token=${csrf_token}&client_id=${client_id}`);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -66,6 +66,7 @@ html = """
 </html>
 """
 
+#ws://127.0.0.1:8000/webSocketConnection/?csrf_token=${csrf_token}&client_id=${client_id}
 
 class Connection:
     def __init__(self, websocket: WebSocket, xgrowKey=None):
@@ -155,4 +156,5 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
             manager.disconnect(websocket)
             # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
     except AuthJWTException:
+        await websocket.send_text("login failed...")
         await websocket.close()
