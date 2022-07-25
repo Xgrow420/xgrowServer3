@@ -134,7 +134,6 @@ async def get():
 async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client_id: str = "empty",
                               Authorize: AuthJWT = Depends(), db: Session = Depends(dataBase)):
     await websocket.accept()
-
     try:
         Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf_token)
         userName = Authorize.get_jwt_subject()
