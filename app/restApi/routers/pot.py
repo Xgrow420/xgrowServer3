@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import pot
 
 router = APIRouter(
-    prefix="/pot",
+    prefix="/api/pot",
     tags=['Pot']
 )
 

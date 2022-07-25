@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import fan
 
 router = APIRouter(
-    prefix="/fan",
+    prefix="/api/fan",
     tags=['Fan']
 )
 

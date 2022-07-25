@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import sensors
 
 router = APIRouter(
-    prefix="/sensors",
+    prefix="/api/sensors",
     tags=['Sensors']
 )
 

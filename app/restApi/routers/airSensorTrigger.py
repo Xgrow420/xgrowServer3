@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import timerTrigger, airSensorTrigger
 
 router = APIRouter(
-    prefix="/airSensorTrigger",
+    prefix="/api/airSensorTrigger",
     tags=['AirSensorTrigger']
 )
 

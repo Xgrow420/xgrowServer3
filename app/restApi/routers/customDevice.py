@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import customDevice
 
 router = APIRouter(
-    prefix="/customDevice",
+    prefix="/api/customDevice",
     tags=['CustomDevice']
 )
 

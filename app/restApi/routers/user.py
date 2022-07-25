@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from app.restApi.repository import user
 
 router = APIRouter(
-    prefix="/user",
+    prefix="/api/user",
     tags=['Users']
 )
 

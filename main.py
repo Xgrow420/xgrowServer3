@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 from app.data import models
 from app.data.postgresSQLconnection.connect_connector import connect_with_connector
@@ -39,6 +40,16 @@ app.include_router(airSensorTrigger.router)
 def get_status():
     return 'chuj'
 
+origins = ["http://localhost", "http://localhost:4200", "http://127.0.0.1:8000", "http://localhost:8000",
+           "http://127.0.0.1:4200", "http://localhost:4200"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST_LOCATION, port=PORT)

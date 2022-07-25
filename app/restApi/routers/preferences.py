@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import preferences
 
 router = APIRouter(
-    prefix="/preferences",
+    prefix="/api/preferences",
     tags=['Preferences']
 )
 

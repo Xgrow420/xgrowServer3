@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import timerTrigger
 
 router = APIRouter(
-    prefix="/timerTrigger",
+    prefix="/api/timerTrigger",
     tags=['TimerTrigger']
 )
 

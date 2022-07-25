@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import logs
 
 router = APIRouter(
-    prefix="/logs",
+    prefix="/api/logs",
     tags=['Logs']
 )
 

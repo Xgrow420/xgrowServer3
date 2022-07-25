@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.restApi.repository import air
 
 router = APIRouter(
-    prefix="/air",
+    prefix="/api/air",
     tags=['Air']
 )
 
