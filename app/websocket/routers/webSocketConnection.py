@@ -139,14 +139,14 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
         userName = Authorize.get_jwt_subject()
         user: schemas.User = await stringUtils.getUserSchemaFromName(userName, db)
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
-        await manager.connect(websocket=websocket, xgrowKey=xgrowKey)
+        connection = await manager.connect(websocket=websocket, xgrowKey=xgrowKey)
 
         try:
             while True:
                 data = await websocket.receive_text()
 
                 # FIXME: test loop
-                await manager.sendMessageToDevice("pobierz se coś", xgrowKey)
+                await manager.sendMessageToDevice(f"Connected user:{userName}, xkey: {connection.getXgrowKey()}", xgrowKey)
 
                 await manager.send_personal_message(f"", websocket)
                 await manager.send_personal_message(f"You wrote: {data}", websocket)

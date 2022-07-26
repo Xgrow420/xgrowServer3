@@ -9,11 +9,14 @@ from app.security.hashing import Hash
 from sqlalchemy.orm import Session
 
 
+router = APIRouter(
+    prefix="/api",
+    tags=['Authentication']
+)
 
-router = APIRouter(tags=['Authentication'])
 
 
-@router.post('/api/login')
+@router.post('/login')
 def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.getDataBase), Authorize: AuthJWT = Depends()):
     user = db.query(models.User).filter(models.User.name == request.username).first()
 

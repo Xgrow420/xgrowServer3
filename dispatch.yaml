@@ -1,6 +1,6 @@
 dispatch:
-- url: "*/api/*"
+- url: "xgrow.pl/api/*"
   service: default
 
-- url: "*/.*"
+- url: "*/*"
   service: frontend

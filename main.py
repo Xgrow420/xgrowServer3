@@ -9,6 +9,7 @@ from app.restApi.routers import customDevice, endpointUtils, pot, user, authenti
     airSensorTrigger, logs, sensors
 from app.websocket.routers import webSocketConnection
 from app.restApi.routers import timerTrigger, air, fan
+from app.websocket.routers.webSocketConnection import getConnectionManager, Connection
 
 HOST_LOCATION = '127.0.0.1'
 PORT = 8000
@@ -37,8 +38,13 @@ app.include_router(airSensorTrigger.router)
 
 
 @app.get('/status')
-def get_status():
-    return 'chuj'
+async def get_status():
+    count = 0
+    for connection in getConnectionManager().active_connections:
+        count = count+1
+        connection: Connection
+        await getConnectionManager().sendMessageToDevice(f"Pobierz Pot{connection.getXgrowKey()}", connection.getXgrowKey())
+    return f'chuj {getConnectionManager().active_connections}, count {count}'
 
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST_LOCATION, port=PORT)
