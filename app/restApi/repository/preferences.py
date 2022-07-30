@@ -6,15 +6,18 @@ from app.data import models
 from app.schemas import schemas
 from fastapi import HTTPException, status
 
+from app.utils.currentUserUtils import userUtils
 
 
 def getPreferences(currentUser: schemas.User, db: Session):
-    preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == currentUser.xgrowKey).first()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == xgrowKey).first()
     return preferences
 
 
 def createPreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
-    preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == currentUser.xgrowKey)
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == xgrowKey)
 
     if not preferences.first():
             newPreferences = models.Preferences(
@@ -34,7 +37,8 @@ def createPreferences(request: schemasPreferences.PreferencesToModify, currentUs
 
 
 def updatePreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
-    preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == currentUser.xgrowKey)
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == xgrowKey)
 
     if not preferences.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

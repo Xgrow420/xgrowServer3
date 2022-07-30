@@ -4,16 +4,18 @@ from app.data import models
 from app.schemas import schemas, schemasCustomDevice
 from fastapi import HTTPException, status
 from app.restApi.repository import customDevice
-
+from app.utils.currentUserUtils import userUtils
 
 
 def getTimerTriggers(currentUser: schemas.User, db: Session):
-    timerTriggers: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == currentUser.xgrowKey).all()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    timerTriggers: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey).all()
     return timerTriggers
 
 
 def getTimerTrigger(index: int, currentUser: schemas.User, db: Session):
-    timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
                                       models.TimerTrigger.index == index).first()
     if not timerTrigger:
         # TO Do create mock fan db
@@ -24,7 +26,8 @@ def getTimerTrigger(index: int, currentUser: schemas.User, db: Session):
 
 
 def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, currentUser: schemas.User, db: Session):
-    timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
                                       models.TimerTrigger.index == request.index)
 
     cD = customDevice.getCustomDevice(db, request.index, currentUser)
@@ -52,7 +55,8 @@ def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, curren
                             detail=f"[!] first create a CustomDevice with index: {request.index} to be able to create linked timerTrigger")
 
 def updateTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, currentUser: schemas.User, db: Session):
-    timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
                                       models.TimerTrigger.index == request.index)
 
     if not timerTrigger.first():

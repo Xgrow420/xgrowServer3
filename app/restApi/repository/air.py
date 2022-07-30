@@ -4,15 +4,18 @@ from app.data import models
 from app.schemas import schemas, schemasAir
 from fastapi import HTTPException, status
 
+from app.utils.currentUserUtils import userUtils
 
 
 def getAir(currentUser: schemas.User, db: Session):
-    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey).first()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey).first()
     return air
 
 
 def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
-    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey)
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
     if not air.first():
         newAir = models.Air(xgrowKey=currentUser.xgrowKey,
@@ -26,7 +29,8 @@ def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Se
 
 
 def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
-    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == currentUser.xgrowKey)
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
     if not air.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

@@ -5,14 +5,18 @@ from app.data import models
 from app.schemas import schemas
 from fastapi import HTTPException, status
 
+from app.utils.currentUserUtils import userUtils
+
 
 def getLogs(currentUser: schemas.User, db: Session):
-    logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == currentUser.xgrowKey).first()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == xgrowKey).first()
     return logs
 
 
 def createLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db: Session):
-    logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == currentUser.xgrowKey)
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == xgrowKey)
 
     if not logs.first():
         newLogs = models.Logs(
@@ -39,7 +43,8 @@ def createLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db:
 
 
 def updateLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db: Session):
-    logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == currentUser.xgrowKey)
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == xgrowKey)
 
     if not logs.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

@@ -28,8 +28,9 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     # secure - consider a more secure solution such as
     # Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
     # keep secrets safe.
-
-    instance_connection_name = 'xgrow-server:europe-west1:xgrow-database'  # e.g. 'project:region:instance'
+    #"xgrow-server:europe-west1:xgrow-ecodb"
+    #"xgrow-server:europe-west1:xgrow-database"
+    instance_connection_name = 'xgrow-server:europe-west1:xgrow-ecodb'  # e.g. 'project:region:instance'
     db_user = 'xgrowdb'  # e.g. 'my-db-user'
     db_pass = 'chuj' # e.g. 'my-db-password'
     db_name = 'xgrowdb'  # e.g. 'my-database'

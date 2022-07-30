@@ -4,14 +4,18 @@ from app.data import models
 from app.schemas import schemas, schemasFan
 from fastapi import HTTPException, status
 
+from app.utils.currentUserUtils import userUtils
+
 
 def getFans(currentUser: schemas.User, db: Session):
-    fans: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey).all()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    fans: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey).all()
     return fans
 
 
 def getFan(index: int, currentUser: schemas.User, db: Session):
-    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
                                       models.Fan.index == index).first()
     if not fan:
         # TO Do create mock fan db
@@ -22,7 +26,8 @@ def getFan(index: int, currentUser: schemas.User, db: Session):
 
 
 def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
-    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
                                       models.Fan.index == request.index)
 
     if not fan.first():
@@ -47,7 +52,8 @@ def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Se
 
 
 def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
-    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
                                       models.Fan.index == request.index)
 
     if not fan.first():

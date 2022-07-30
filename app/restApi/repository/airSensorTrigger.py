@@ -4,17 +4,19 @@ from app.data import models
 from app.schemas import schemas, schemasCustomDevice
 from fastapi import HTTPException, status
 from app.restApi.repository import customDevice
+from app.utils.currentUserUtils import userUtils
 
 
 def getAirSensorTriggers(currentUser: schemas.User, db: Session):
-    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
-        models.AirSensorTrigger.xgrowKey == currentUser.xgrowKey).all()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(models.AirSensorTrigger.xgrowKey == xgrowKey).all()
     return airSensorTrigger
 
 
 def getAirSensorTrigger(index: int, currentUser: schemas.User, db: Session):
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
-        models.AirSensorTrigger.xgrowKey == currentUser.xgrowKey,
+        models.AirSensorTrigger.xgrowKey == xgrowKey,
         models.AirSensorTrigger.index == index).first()
     if not airSensorTrigger:
         # TO Do create mock fan db
@@ -26,8 +28,9 @@ def getAirSensorTrigger(index: int, currentUser: schemas.User, db: Session):
 
 def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify, currentUser: schemas.User,
                            db: Session):
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
-        models.AirSensorTrigger.xgrowKey == currentUser.xgrowKey,
+        models.AirSensorTrigger.xgrowKey == xgrowKey,
         models.AirSensorTrigger.index == request.index)
 
     cD = customDevice.getCustomDevice(db, request.index, currentUser)
@@ -53,7 +56,8 @@ def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify
 
 
 def updateAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify, currentUser: schemas.User, db: Session):
-    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(models.AirSensorTrigger.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(models.AirSensorTrigger.xgrowKey == xgrowKey,
                                                                models.AirSensorTrigger.index == request.index)
 
     if not airSensorTrigger.first():

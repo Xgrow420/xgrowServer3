@@ -4,18 +4,21 @@ from sqlalchemy.orm import Session, Query
 from app.data import models
 from app.restApi.repository import timerTrigger, airSensorTrigger
 from app.schemas import schemas, schemasCustomDevice
+from app.utils.currentUserUtils import userUtils
 
 from app.utils.schemasUtils import schemasUtils
 
 
 def getCustomDevices(currentUser: schemas.User, db: Session):
     # if currentUser.userType
-    devices: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey).all()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    devices: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey).all()
     return devices
 
 
 def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
-    device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                   models.CustomDevice.index == index).first()
     if not device:
         # TO Do create mock slot db
@@ -26,7 +29,8 @@ def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
 
 
 def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
-    device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                   models.CustomDevice.index == request.index)
 
     if device.first():
@@ -55,7 +59,8 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
 
 
 def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
-    customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == currentUser.xgrowKey,
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                         models.CustomDevice.index == request.index)
 
     if not customDevice.first():

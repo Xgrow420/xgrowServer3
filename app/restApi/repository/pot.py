@@ -9,12 +9,14 @@ from app.utils.currentUserUtils import userUtils
 
 
 def getPots(currentUser: schemas.User, db: Session):
-    pots: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser)).all()
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    pots: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey).all()
     return pots
 
 
 def getPot(index: int, currentUser: schemas.User, db: Session):
-    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == userUtils.getXgrowKeyForCurrentUser(currentUser),
+    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                       models.Pot.index == index).first()
     if not pot:
         # TO Do create mock fan db

@@ -15,7 +15,7 @@ import app.utils.stringUtils as stringUtils
 from app.restApi.repository import pot
 
 router = APIRouter(
-    prefix="/webSocketConnection",
+    prefix="/api/webSocketConnection",
     tags=['WebSocket Connection']
 )
 
@@ -66,6 +66,7 @@ html = """
 </html>
 """
 
+#ws://xgrow.pl/webSocketConnection/?csrf_token=${csrf_token}&client_id=${client_id}
 #ws://127.0.0.1:8000/webSocketConnection/?csrf_token=${csrf_token}&client_id=${client_id}
 
 class Connection:
