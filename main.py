@@ -14,9 +14,14 @@ from app.websocket.routers.webSocketConnection import getConnectionManager, Conn
 HOST_LOCATION = '127.0.0.1'
 PORT = 8000
 
+localHost = False
+
+
 app = FastAPI()
 
-models.Base.metadata.create_all(connect_with_connector())
+
+models.Base.metadata.create_all(standard_connect())
+#models.Base.metadata.create_all(connect_with_connector())
 ''' 
     for deploy plz use connect_with_connector() in 
     models.Base.metadata.create_all(),
@@ -37,14 +42,16 @@ app.include_router(webSocketConnection.router)
 app.include_router(airSensorTrigger.router)
 
 
-@app.get('/status')
+@app.get('/api/status')
 async def get_status():
     count = 0
+    xklist = []
     for connection in getConnectionManager().active_connections:
         count = count+1
         connection: Connection
+        xklist.append(connection.getXgrowKey())
         await getConnectionManager().sendMessageToDevice(f"Pobierz Pot{connection.getXgrowKey()}", connection.getXgrowKey())
-    return f'chuj {getConnectionManager().active_connections}, count {count}'
+    return f'chuj {getConnectionManager().active_connections}, count: {count}, xkeyList: {xklist}'
 
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST_LOCATION, port=PORT)
