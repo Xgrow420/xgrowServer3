@@ -26,8 +26,21 @@ class Connection:
 
 
 class ConnectionManager:
+
+    _instance = None
+
+    @staticmethod
+    def getInstance():
+        if ConnectionManager._instance is None:
+            ConnectionManager()
+        return ConnectionManager._instance
+
     def __init__(self):
-        self.active_connections: List[Connection] = []
+        if ConnectionManager._instance is not None:
+            raise Exception("ConnectionManager class is a singleton!")
+        else:
+            self.active_connections: List[Connection] = []
+            ConnectionManager._instance = self
 
     async def connect(self, websocket: WebSocket, xgrowKey: str):
         connection = Connection(websocket=websocket, xgrowKey=xgrowKey)
@@ -54,4 +67,4 @@ connectionManager = ConnectionManager()
 
 
 def getConnectionManager():
-    return connectionManager
+    return ConnectionManager.getInstance()
