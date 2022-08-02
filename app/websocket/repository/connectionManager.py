@@ -8,6 +8,7 @@ class Connection:
         self._webSocket: WebSocket = websocket
         self._xgrowKey: str = xgrowKey
 
+
     def getWebSocket(self):
         return self._webSocket
 
@@ -60,10 +61,16 @@ class ConnectionManager:
         for connection in self.active_connections:
             if connection.getXgrowKey() == xgrowKey:
                 await connection.getWebSocket().send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.getWebSocket().send_text(message)
+
+
+
     # TODO: add if statment connection not found info
 
 
-connectionManager = ConnectionManager()
 
 
 def getConnectionManager():

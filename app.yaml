@@ -1,6 +1,7 @@
 runtime: python
 env: flex
-entrypoint: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
+entrypoint: gunicorn -w 1 -k uvicorn.workers.UvicornWorker main:app
+#entrypoint: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
 #entrypoint: gunicorn -b :$PORT main:app
 #pip3 freeze > requirements.txt <= autoCreate requirements command
 manual_scaling:
