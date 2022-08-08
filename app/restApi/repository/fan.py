@@ -31,7 +31,7 @@ def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Se
                                       models.Fan.index == request.index)
 
     if not fan.first():
-        newFan = models.Fan(xgrowKey=currentUser.xgrowKey,
+        newFan = models.Fan(xgrowKey=xgrowKey,
                             index=request.index,
                             fanName=request.fanName,
                             active=request.active,

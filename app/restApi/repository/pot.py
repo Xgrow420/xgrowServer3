@@ -51,7 +51,8 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         db.add(newPot)
         db.commit()
         db.refresh(newPot)
-        await getConnectionManager().sendMessageToDevice("Pobierz Pot", xgrowKey)
+        if currentUser.userType:
+            await getConnectionManager().sendMessageToDevice("Pobierz Pot", xgrowKey)
         return 'created'
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

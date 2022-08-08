@@ -20,7 +20,7 @@ def createLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db:
 
     if not logs.first():
         newLogs = models.Logs(
-            xgrowKey=currentUser.xgrowKey,
+            xgrowKey=xgrowKey,
             airTemperatureLogList=request.airTemperatureLogList,
             airHumidityLogList=request.airHumidityLogList,
             timeLogList=request.timeLogList,

@@ -22,7 +22,7 @@ class Fan(BaseModel):
     hotMode: bool
     tempMax: int
     tempMin: int
-    temperatureStatus: int #ENUM <=========
+    temperatureStatus: str #ENUM <=========
 
     class Config():
         orm_mode = True
@@ -38,7 +38,7 @@ class FanToModify(BaseModel):
     hotMode: bool
     tempMax: int
     tempMin: int
-    temperatureStatus: int #ENUM <=========
+    temperatureStatus: str #ENUM <=========
 
     class Config():
         orm_mode = True

@@ -34,7 +34,7 @@ def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, curren
     if cD:
         if not timerTrigger.first():
             newTimerTrigger = models.TimerTrigger(
-                xgrowKey=currentUser.xgrowKey,
+                xgrowKey=xgrowKey,
                 index=request.index,
                 hourStart=request.hourStart,
                 minuteStart=request.minuteStart,

@@ -57,7 +57,7 @@ class Fan(Base):
     hotMode = Column(Boolean, default=False)
     tempMax = Column(Integer)
     tempMin = Column(Integer)
-    temperatureStatus = Column(Integer)  # ENUM <=========
+    temperatureStatus = Column(String)  # ENUM <=========
 
 
 class Preferences(Base):

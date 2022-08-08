@@ -115,7 +115,8 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
                 await getConnectionManager().send_personal_message(f"You wrote: {data}", websocket)
                 await getConnectionManager().send_personal_message(f"Client {xgrowKey}", websocket)
         except WebSocketDisconnect:
-            getConnectionManager().disconnect(websocket)
+            getConnectionManager().disconnect(xgrowKey)
+            #await websocket.close() #<<=== niepotrzebne
             # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
     except AuthJWTException:
         await websocket.send_text("login failed...")

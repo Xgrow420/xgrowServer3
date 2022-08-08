@@ -37,7 +37,7 @@ def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify
     if cD:
         if not airSensorTrigger.first():
             newAirSensorTrigger = models.AirSensorTrigger(
-                xgrowKey=currentUser.xgrowKey,
+                xgrowKey=xgrowKey,
                 index=request.index,
                 functionType=request.functionType,
                 value=request.value,

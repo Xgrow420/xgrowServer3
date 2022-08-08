@@ -63,6 +63,7 @@ class RawCustomDevice(BaseModel):
 
 class CustomDevice(BaseModel):
 
+
     xgrowKey: str
     index: int
     deviceName: str

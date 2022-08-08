@@ -25,6 +25,10 @@ class Connection:
         if websocket == self._webSocket:
             return websocket
 
+    def getConnectionByXgrowKey(self, xgrowKey):
+        if xgrowKey == self._xgrowKey:
+            return self._webSocket
+
 
 class ConnectionManager:
 
@@ -48,9 +52,9 @@ class ConnectionManager:
         self.active_connections.append(connection)
         return connection
 
-    def disconnect(self, websocket: WebSocket):
+    def disconnect(self, xgrowKey):
         for connection in self.active_connections:
-            if connection.getConnectionByWebSocket(websocket):
+            if connection.getConnectionByXgrowKey(xgrowKey):
                 print(f"{connection.getXgrowKey()} disconnected")
                 self.active_connections.remove(connection)
 
@@ -60,7 +64,11 @@ class ConnectionManager:
     async def sendMessageToDevice(self, message: str, xgrowKey: str):
         for connection in self.active_connections:
             if connection.getXgrowKey() == xgrowKey:
-                await connection.getWebSocket().send_text(message)
+                try:
+                    await connection.getWebSocket().send_text(message)
+                except RuntimeError:
+                    print(f"webSocket: {connection.getWebSocket()} does not exist i will deleting it...")
+                    self.active_connections.remove(connection)
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:
@@ -74,4 +82,5 @@ class ConnectionManager:
 
 
 def getConnectionManager():
-    return ConnectionManager.getInstance()
+    connectionManager : ConnectionManager = ConnectionManager.getInstance()
+    return connectionManager

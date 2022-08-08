@@ -21,7 +21,7 @@ def createPreferences(request: schemasPreferences.PreferencesToModify, currentUs
 
     if not preferences.first():
             newPreferences = models.Preferences(
-                xgrowKey=currentUser.xgrowKey,
+                xgrowKey=xgrowKey,
                 language=request.language,
                 temperatureFormat=request.temperatureFormat,
                 dateFormat=request.dateFormat,

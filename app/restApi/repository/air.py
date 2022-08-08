@@ -18,7 +18,7 @@ def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Se
     air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
     if not air.first():
-        newAir = models.Air(xgrowKey=currentUser.xgrowKey,
+        newAir = models.Air(xgrowKey=xgrowKey,
                             airTemperature=request.airTemperature,
                             airHumidity=request.airHumidity
                             )

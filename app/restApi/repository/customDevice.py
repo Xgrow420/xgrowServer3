@@ -38,7 +38,7 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
                             detail=f"CustomDevice for user {currentUser.name} with index {request.index} already exists")
 
     else:
-        newCustomDevice = models.CustomDevice(xgrowKey=currentUser.xgrowKey,
+        newCustomDevice = models.CustomDevice(xgrowKey=xgrowKey,
                                               index=request.index,
                                               deviceName=request.deviceName,
                                               deviceFunction=request.deviceFunction,
