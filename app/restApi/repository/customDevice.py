@@ -40,6 +40,7 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
     else:
         newCustomDevice = models.CustomDevice(xgrowKey=currentUser.xgrowKey,
                                               index=request.index,
+                                              deviceName=request.deviceName,
                                               deviceFunction=request.deviceFunction,
                                               working=request.working,
                                               active=request.active)

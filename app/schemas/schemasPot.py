@@ -7,6 +7,7 @@ class Pot(BaseModel):
     xgrowKey: str
     # setObjectName = Column(String)
     index: int
+    potName: str
     active: bool  # bool
     manualWateringTimeLimit: int
     autoWateringFunction: bool  # bool
@@ -28,6 +29,7 @@ class PotToModify(BaseModel):
     # xgrowKey: str
     # setObjectName = Column(String)
     index: int
+    potName: str
     active: bool  # bool
     manualWateringTimeLimit: int
     autoWateringFunction: bool  # bool

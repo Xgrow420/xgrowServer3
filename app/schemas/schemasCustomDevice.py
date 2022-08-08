@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-from app.utils.schemasUtils import schemasUtils
-
 
 class TimerTrigger(BaseModel):
 
@@ -67,6 +65,7 @@ class CustomDevice(BaseModel):
 
     xgrowKey: str
     index: int
+    deviceName: str
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
@@ -80,6 +79,7 @@ class CustomDevice(BaseModel):
 class CustomDeviceToModify(BaseModel):
 
     index: int
+    deviceName: str
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool

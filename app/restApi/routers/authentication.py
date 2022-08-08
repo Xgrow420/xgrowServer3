@@ -29,7 +29,7 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
 
     access_token = token.create_access_token(data={"sub": user.name})
 
-    accessWebSocketToken = Authorize.create_access_token(subject=user.name, fresh=True)
+    accessWebSocketToken = Authorize.create_access_token(subject=user.name, fresh=True, expires_time=False)
     refreshWebSocketToken = Authorize.create_refresh_token(subject=user.name)
 
     Authorize.set_access_cookies(accessWebSocketToken)

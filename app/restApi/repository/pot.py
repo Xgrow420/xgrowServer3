@@ -34,6 +34,7 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
     if not pot.first():
         newPot = models.Pot(xgrowKey=xgrowKey,
                             index=request.index,
+                            potName=request.potName,
                             active=request.active,
                             manualWateringTimeLimit=request.manualWateringTimeLimit,
                             autoWateringFunction=request.autoWateringFunction,

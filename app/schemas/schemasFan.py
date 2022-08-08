@@ -14,6 +14,7 @@ class Fan(BaseModel):
 
     xgrowKey: str
     index: int
+    fanName: str
     active: bool
     working: bool
     normalMode: bool
@@ -29,6 +30,7 @@ class Fan(BaseModel):
 class FanToModify(BaseModel):
 
     index: int
+    fanName: str
     active: bool
     working: bool
     normalMode: bool

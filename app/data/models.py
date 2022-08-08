@@ -28,6 +28,7 @@ class Pot(Base):
     # setObjectName = Column(String)
     #device Section
     index = Column(Integer)
+    potName = Column(String)
     active = Column(Boolean, default=False)  # bool
     manualWateringTimeLimit = Column(Integer)
     autoWateringFunction = Column(Boolean, default=False)  # bool
@@ -48,6 +49,7 @@ class Fan(Base):
     xgrowKey = Column(String)
     #device Section
     index = Column(Integer)
+    fanName = Column(String)
     active = Column(Boolean, default=False)
     working = Column(Boolean, default=False)
     normalMode = Column(Boolean, default=False)
@@ -93,6 +95,7 @@ class CustomDevice(Base):
     xgrowKey = Column(String)
     #device Section
     index = Column(Integer)
+    deviceName = Column(String)
     active = Column(Boolean)
     deviceFunction = Column(String)  # SlotFunction.TIMER  ENUM TO DO
     working = Column(Boolean)
