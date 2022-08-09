@@ -7,7 +7,7 @@ from app.data.postgresSQLconnection.connect_connector import connect_with_connec
 from app.data.postgresSQLconnection.standard import standard_connect
 from app.restApi.routers import customDevice, endpointUtils, pot, user, authentication, preferences, \
     airSensorTrigger, logs, sensors
-from app.websocket.routers import webSocketConnection
+from app.websocket.routers import webSocketConnection, webSocketFrontend
 from app.restApi.routers import timerTrigger, air, fan
 from app.websocket.routers.webSocketConnection import getConnectionManager, Connection
 
@@ -40,6 +40,7 @@ app.include_router(timerTrigger.router)
 app.include_router(endpointUtils.router)
 app.include_router(webSocketConnection.router)
 app.include_router(airSensorTrigger.router)
+app.include_router(webSocketFrontend.router)
 
 
 @app.get('/api/status')
@@ -47,7 +48,6 @@ async def get_status():
     count = 0
     xklist = []
 
-    getConnectionManager().broadcast("kurwa mac")
     for connection in getConnectionManager().active_connections:
         count = count+1
         connection: Connection

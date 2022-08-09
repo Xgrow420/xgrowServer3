@@ -3,10 +3,10 @@ from typing import List
 from fastapi import WebSocket
 
 
-class Connection:
-    def __init__(self, websocket: WebSocket, xgrowKey=None):
+class ConnectionFrontend:
+    def __init__(self, websocket: WebSocket, userName=None):
         self._webSocket: WebSocket = websocket
-        self._xgrowKey: str = xgrowKey
+        self._userName: str = userName
 
 
     def getWebSocket(self):
@@ -15,60 +15,60 @@ class Connection:
     def setWebSocket(self, websocket: WebSocket):
         self._webSocket = websocket
 
-    def getXgrowKey(self):
-        return self._xgrowKey
+    def getUserName(self):
+        return self._userName
 
-    def setXgrowKey(self, xgrowKey: str):
-        self._xgrowKey = xgrowKey
+    def setUserName(self, userName: str):
+        self._userName = userName
 
     def getConnectionByWebSocket(self, websocket: WebSocket):
         if websocket == self._webSocket:
             return websocket
 
-    def getConnectionByXgrowKey(self, xgrowKey):
-        if xgrowKey == self._xgrowKey:
+    def getConnectionByUserName(self, userName):
+        if userName == self._userName:
             return self._webSocket
 
 
-class ConnectionManager:
+class ConnectionManagerFrontend:
 
     _instance = None
 
     @staticmethod
     def getInstance():
-        if ConnectionManager._instance is None:
-            ConnectionManager()
-        return ConnectionManager._instance
+        if ConnectionManagerFrontend._instance is None:
+            ConnectionManagerFrontend()
+        return ConnectionManagerFrontend._instance
 
     def __init__(self):
-        if ConnectionManager._instance is not None:
+        if ConnectionManagerFrontend._instance is not None:
             raise Exception("ConnectionManager class is a singleton!")
         else:
-            self.active_connections: List[Connection] = []
-            ConnectionManager._instance = self
+            self.active_connections: List[ConnectionFrontend] = []
+            ConnectionManagerFrontend._instance = self
 
-    async def connect(self, websocket: WebSocket, xgrowKey: str):
+    async def connect(self, websocket: WebSocket, userName: str):
         for connect in self.active_connections:
-            if connect.getXgrowKey() == xgrowKey:
-                await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {xgrowKey}")
+            if connect.getUserName() == userName:
+                await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {userName}")
                 self.active_connections.remove(connect)
 
-        connection = Connection(websocket=websocket, xgrowKey=xgrowKey)
+        connection = ConnectionFrontend(websocket=websocket, userName=userName)
         self.active_connections.append(connection)
         return connection
 
-    def disconnect(self, xgrowKey):
+    def disconnect(self, userName):
         for connection in self.active_connections:
-            if connection.getConnectionByXgrowKey(xgrowKey):
-                print(f"{connection.getXgrowKey()} disconnected")
+            if connection.getConnectionByUserName(userName):
+                print(f"{connection.getUserName()} disconnected")
                 self.active_connections.remove(connection)
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def sendMessageToDevice(self, message: str, xgrowKey: str):
+    async def sendMessageToDevice(self, message: str, userName: str):
         for connection in self.active_connections:
-            if connection.getXgrowKey() == xgrowKey:
+            if connection.getUserName() == userName:
                 try:
                     await connection.getWebSocket().send_text(message)
                 except RuntimeError:
@@ -86,6 +86,6 @@ class ConnectionManager:
 
 
 
-def getConnectionManager():
-    connectionManager : ConnectionManager = ConnectionManager.getInstance()
+def getConnectionManagerFrontend():
+    connectionManager : ConnectionManagerFrontend = ConnectionManagerFrontend.getInstance()
     return connectionManager
