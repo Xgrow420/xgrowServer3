@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, Query
 from app.data import models
 from app.schemas import schemas, schemasSensors
 from fastapi import HTTPException, status
-from app.websocket.routers.webSocketConnection import getConnectionManager
+from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
 from app.utils.currentUserUtils import userUtils
 

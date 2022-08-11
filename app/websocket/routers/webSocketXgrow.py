@@ -6,14 +6,15 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from sqlalchemy.orm import Session
 
-from app.schemas import schemas, schemasPot
+from app.schemas import schemas
 from app.data import database
 from app.schemas.schemas import Settings
 from app.utils.currentUserUtils import userUtils
 import app.utils.stringUtils as stringUtils
 
-from app.restApi.repository import pot
-from app.websocket.repository.connectionManager import Connection, getConnectionManager
+
+from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 
 router = APIRouter(
     prefix="/api/webSocketConnection",
@@ -82,7 +83,6 @@ async def get():
     return HTMLResponse(html)
 
 
-
 @router.websocket("/")
 async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client_id: str = "empty",
                               Authorize: AuthJWT = Depends(), db: Session = Depends(dataBase)):
@@ -92,15 +92,27 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
         userName = Authorize.get_jwt_subject()
         user: schemas.User = await stringUtils.getUserSchemaFromName(userName, db)
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
-        connection = await getConnectionManager().connect(websocket=websocket, xgrowKey=xgrowKey)
+        connection = await getConnectionManagerXgrow().connect(websocket=websocket, xgrowKey=xgrowKey)
 
         try:
             while True:
-                data = await websocket.receive_text()
-
+                command = await websocket.receive_text()
+                await getConnectionManagerFrontend().sendMessageToDevice(command, userName=userName)
                 # FIXME: test loop
-                await getConnectionManager().sendMessageToDevice(f"Connected user:{userName}, xkey: {connection.getXgrowKey()}", xgrowKey)
+                await getConnectionManagerXgrow().sendMessageToDevice(f"Connected user:{userName}, xkey: {connection.getXgrowKey()}", xgrowKey)
 
+        except WebSocketDisconnect:
+            getConnectionManagerXgrow().disconnect(xgrowKey)
+            #await websocket.close() #<<=== niepotrzebne
+            # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
+    except AuthJWTException:
+        await websocket.send_text("login failed...")
+        await websocket.close()
+
+
+
+
+'''
                 count = 0
                 xklist = []
                 for connection in getConnectionManager().active_connections:
@@ -112,12 +124,6 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
                 await getConnectionManager().sendMessageToDevice(f'chuj {getConnectionManager().active_connections}, count: {count}, xkeyList: {xklist}', connection.getXgrowKey())
 
                 await getConnectionManager().send_personal_message(f"", websocket)
-                await getConnectionManager().send_personal_message(f"You wrote: {data}", websocket)
+                await getConnectionManager().send_personal_message(f"You wrote: {command}", websocket)
                 await getConnectionManager().send_personal_message(f"Client {xgrowKey}", websocket)
-        except WebSocketDisconnect:
-            getConnectionManager().disconnect(xgrowKey)
-            #await websocket.close() #<<=== niepotrzebne
-            # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
-    except AuthJWTException:
-        await websocket.send_text("login failed...")
-        await websocket.close()
+'''

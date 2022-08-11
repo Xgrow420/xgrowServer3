@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, Query
 from app.data import models
 from app.schemas import schemas, schemasPot
 from fastapi import HTTPException, status
-from app.websocket.routers.webSocketConnection import getConnectionManager
+from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
 from app.utils.currentUserUtils import userUtils
 
@@ -52,7 +52,7 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         db.commit()
         db.refresh(newPot)
         if currentUser.userType:
-            await getConnectionManager().sendMessageToDevice("Pobierz Pot", xgrowKey)
+            await getConnectionManagerXgrow().sendMessageToDevice("Pobierz Pot", xgrowKey)
         return 'created'
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -71,5 +71,5 @@ async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, 
     else:
         pot.update(request.dict())
         db.commit()
-        await getConnectionManager().sendMessageToDevice("Pobierz Pot", xgrowKey)
+        await getConnectionManagerXgrow().sendMessageToDevice("Pobierz Pot", xgrowKey)
         return 'updated'

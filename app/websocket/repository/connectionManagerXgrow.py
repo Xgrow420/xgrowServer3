@@ -3,7 +3,7 @@ from typing import List
 from fastapi import WebSocket
 
 
-class Connection:
+class ConnectionXgrow:
     def __init__(self, websocket: WebSocket, xgrowKey=None):
         self._webSocket: WebSocket = websocket
         self._xgrowKey: str = xgrowKey
@@ -30,22 +30,22 @@ class Connection:
             return self._webSocket
 
 
-class ConnectionManager:
+class ConnectionManagerXgrow:
 
     _instance = None
 
     @staticmethod
     def getInstance():
-        if ConnectionManager._instance is None:
-            ConnectionManager()
-        return ConnectionManager._instance
+        if ConnectionManagerXgrow._instance is None:
+            ConnectionManagerXgrow()
+        return ConnectionManagerXgrow._instance
 
     def __init__(self):
-        if ConnectionManager._instance is not None:
+        if ConnectionManagerXgrow._instance is not None:
             raise Exception("ConnectionManager class is a singleton!")
         else:
-            self.active_connections: List[Connection] = []
-            ConnectionManager._instance = self
+            self.active_connections: List[ConnectionXgrow] = []
+            ConnectionManagerXgrow._instance = self
 
     async def connect(self, websocket: WebSocket, xgrowKey: str):
         for connect in self.active_connections:
@@ -53,7 +53,7 @@ class ConnectionManager:
                 await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {xgrowKey}")
                 self.active_connections.remove(connect)
 
-        connection = Connection(websocket=websocket, xgrowKey=xgrowKey)
+        connection = ConnectionXgrow(websocket=websocket, xgrowKey=xgrowKey)
         self.active_connections.append(connection)
         return connection
 
@@ -71,9 +71,12 @@ class ConnectionManager:
             if connection.getXgrowKey() == xgrowKey:
                 try:
                     await connection.getWebSocket().send_text(message)
+                    return True
                 except RuntimeError:
                     print(f"webSocket: {connection.getWebSocket()} does not exist i will deleting it...")
                     self.active_connections.remove(connection)
+                    return False
+
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:
@@ -86,6 +89,6 @@ class ConnectionManager:
 
 
 
-def getConnectionManager():
-    connectionManager : ConnectionManager = ConnectionManager.getInstance()
+def getConnectionManagerXgrow():
+    connectionManager : ConnectionManagerXgrow = ConnectionManagerXgrow.getInstance()
     return connectionManager

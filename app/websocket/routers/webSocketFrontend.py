@@ -11,6 +11,7 @@ from app.data import database
 from app.schemas.schemas import Settings
 from app.utils.currentUserUtils import userUtils
 import app.utils.stringUtils as stringUtils
+from app.websocket.repository.commandManagerFrontend import getCommandManagerFrontend
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend, ConnectionFrontend
 
 router = APIRouter(
@@ -38,11 +39,27 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
         Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf_token)
         userName = Authorize.get_jwt_subject()
         user: schemas.User = await stringUtils.getUserSchemaFromName(userName, db)
+        xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
         connection = await getConnectionManagerFrontend().connect(websocket=websocket, userName=userName)
 
         try:
             while True:
-                data = await websocket.receive_text()
+                command = await websocket.receive_text()
+                await getConnectionManagerFrontend().sendMessageToDevice(f"command: {command} was sent...", userName)
+                await getCommandManagerFrontend().commandDispatcher(command=command, xgrowKey=xgrowKey, userName=userName)
+
+
+
+        except WebSocketDisconnect:
+            getConnectionManagerFrontend().disconnect(userName=userName)
+            # await websocket.close() #<<=== niepotrzebne
+            # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
+    except AuthJWTException:
+        await websocket.send_text("login failed...")
+        await websocket.close()
+
+
+'''
                 print(data)
                 # FIXME: test loop
                 await getConnectionManagerFrontend().sendMessageToDevice(
@@ -60,11 +77,4 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
                     f'chuj {getConnectionManagerFrontend().active_connections}, count: {count}, xkeyList: {xklist}',
                     connection.getUserName())
 
-
-        except WebSocketDisconnect:
-            getConnectionManagerFrontend().disconnect(userName=userName)
-            # await websocket.close() #<<=== niepotrzebne
-            # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
-    except AuthJWTException:
-        await websocket.send_text("login failed...")
-        await websocket.close()
+'''
