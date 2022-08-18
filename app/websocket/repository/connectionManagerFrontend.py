@@ -71,9 +71,11 @@ class ConnectionManagerFrontend:
             if connection.getUserName() == userName:
                 try:
                     await connection.getWebSocket().send_text(message)
+                    return True
                 except RuntimeError:
                     print(f"webSocket: {connection.getWebSocket()} does not exist i will deleting it...")
                     self.active_connections.remove(connection)
+                    return False
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:

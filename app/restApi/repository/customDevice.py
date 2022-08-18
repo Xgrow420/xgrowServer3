@@ -7,6 +7,7 @@ from app.schemas import schemas, schemasCustomDevice
 from app.utils.currentUserUtils import userUtils
 
 from app.utils.schemasUtils import schemasUtils
+from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
 def getCustomDevices(currentUser: schemas.User, db: Session):
@@ -28,7 +29,7 @@ def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
         return device
 
 
-def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
+async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                   models.CustomDevice.index == request.index)
@@ -56,10 +57,13 @@ def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         request.airSensorTrigger.index = request.index
         airSensorTrigger.createAirSensorTrigger(request.airSensorTrigger, currentUser, db)
 
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
+
         return newCustomDevice
 
 
-def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
+async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                         models.CustomDevice.index == request.index)
@@ -78,4 +82,8 @@ def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToM
         airSensorTrigger.updateAirSensorTrigger(request.airSensorTrigger, currentUser, db)
 
         db.commit()
+
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
+
         return 'updated'

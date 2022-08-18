@@ -52,7 +52,7 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         db.commit()
         db.refresh(newPot)
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice("Pobierz Pot", xgrowKey)
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
         return 'created'
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -71,5 +71,6 @@ async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, 
     else:
         pot.update(request.dict())
         db.commit()
-        await getConnectionManagerXgrow().sendMessageToDevice("Pobierz Pot", xgrowKey)
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
         return 'updated'

@@ -5,6 +5,7 @@ from app.schemas import schemas, schemasAir
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
 def getAir(currentUser: schemas.User, db: Session):
@@ -13,7 +14,7 @@ def getAir(currentUser: schemas.User, db: Session):
     return air
 
 
-def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
+async def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
@@ -25,10 +26,12 @@ def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Se
         db.add(newAir)
         db.commit()
         db.refresh(newAir)
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
         return 'created'
 
 
-def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
+async def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
@@ -39,4 +42,6 @@ def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Se
     else:
         air.update(request.dict())
         db.commit()
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
         return 'updated'

@@ -19,9 +19,9 @@ def getSensors(current_user: schemas.User = Depends(oauth2.getCurrentUser), db: 
     return sensors.getSensors(current_user,db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def createSensors(request: schemasSensors.SensorsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return sensors.createSensors(request,current_user,db)
+async def createSensors(request: schemasSensors.SensorsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await sensors.createSensors(request,current_user,db)
 
 @router.put('/', status_code=status.HTTP_201_CREATED)
-def updateSensors(request: schemasSensors.SensorsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return sensors.updateSensors(request, current_user, db)
+async def updateSensors(request: schemasSensors.SensorsToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await sensors.updateSensors(request, current_user, db)

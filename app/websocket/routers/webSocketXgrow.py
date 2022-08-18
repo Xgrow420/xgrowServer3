@@ -11,7 +11,7 @@ from app.data import database
 from app.schemas.schemas import Settings
 from app.utils.currentUserUtils import userUtils
 import app.utils.stringUtils as stringUtils
-
+from app.websocket.repository.commandManager import getCommandManager
 
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
@@ -89,17 +89,16 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
     await websocket.accept()
     try:
         Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf_token)
-        userName = Authorize.get_jwt_subject()
-        user: schemas.User = await stringUtils.getUserSchemaFromName(userName, db)
+        uName = Authorize.get_jwt_subject()
+        user: schemas.User = await stringUtils.getUserSchemaFromName(uName, db)
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
+        userName = await userUtils.asyncGetUserNameForCurrentUser(user)
         connection = await getConnectionManagerXgrow().connect(websocket=websocket, xgrowKey=xgrowKey)
 
         try:
             while True:
                 command = await websocket.receive_text()
-                await getConnectionManagerFrontend().sendMessageToDevice(command, userName=userName)
-                # FIXME: test loop
-                await getConnectionManagerXgrow().sendMessageToDevice(f"Connected user:{userName}, xkey: {connection.getXgrowKey()}", xgrowKey)
+                await getCommandManager().sendCommandToFrontend(command=command, xgrowKey=xgrowKey, userName=userName)
 
         except WebSocketDisconnect:
             getConnectionManagerXgrow().disconnect(xgrowKey)

@@ -5,6 +5,7 @@ from app.schemas import schemas, schemasFan
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
 def getFans(currentUser: schemas.User, db: Session):
@@ -25,7 +26,7 @@ def getFan(index: int, currentUser: schemas.User, db: Session):
         return fan
 
 
-def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
+async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
                                       models.Fan.index == request.index)
@@ -46,13 +47,16 @@ def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Se
         db.add(newFan)
         db.commit()
         db.refresh(newFan)
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
+
         return 'created'
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"[!] Fan for user {currentUser.name} with index: {request.index} is already exists")
 
 
-def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
+async def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
                                       models.Fan.index == request.index)
@@ -64,4 +68,6 @@ def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Se
     else:
         fan.update(request.dict())
         db.commit()
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
         return 'updated'

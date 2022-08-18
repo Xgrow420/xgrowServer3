@@ -7,6 +7,7 @@ from app.schemas import schemas
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
 def getPreferences(currentUser: schemas.User, db: Session):
@@ -15,7 +16,7 @@ def getPreferences(currentUser: schemas.User, db: Session):
     return preferences
 
 
-def createPreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
+async def createPreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == xgrowKey)
 
@@ -29,6 +30,9 @@ def createPreferences(request: schemasPreferences.PreferencesToModify, currentUs
             db.add(newPreferences)
             db.commit()
             db.refresh(newPreferences)
+            if currentUser.userType:
+                await getConnectionManagerXgrow().sendMessageToDevice(f"/download preferences", xgrowKey)
+
             return newPreferences
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -36,7 +40,7 @@ def createPreferences(request: schemasPreferences.PreferencesToModify, currentUs
 
 
 
-def updatePreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
+async def updatePreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == xgrowKey)
 
@@ -46,6 +50,8 @@ def updatePreferences(request: schemasPreferences.PreferencesToModify, currentUs
     else:
         preferences.update(request.dict())
         db.commit()
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download preferences", xgrowKey)
         return 'updated'
 
 

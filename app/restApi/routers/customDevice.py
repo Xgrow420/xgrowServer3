@@ -23,12 +23,12 @@ def getDeviceForCurrentUser(deviceIndex: int, current_user: schemas.User = Depen
     return customDevice.getCustomDevice(db, deviceIndex, current_user)
 
 @router.post('/', status_code=status.HTTP_202_ACCEPTED, response_model=schemasCustomDevice.CustomDeviceToModify)
-def setDeviceForCurrentUser(request: schemasCustomDevice.CustomDeviceToModify, current_user: schemas.User = Depends(
+async def setDeviceForCurrentUser(request: schemasCustomDevice.CustomDeviceToModify, current_user: schemas.User = Depends(
     oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return customDevice.createCustomDevice(db, request, current_user)
+    return await customDevice.createCustomDevice(db, request, current_user)
 
 @router.put('/', status_code=status.HTTP_202_ACCEPTED)
-def updateDeviceForCurrentUser(request: schemasCustomDevice.CustomDeviceToModify, current_user: schemas.User = Depends(
+async def updateDeviceForCurrentUser(request: schemasCustomDevice.CustomDeviceToModify, current_user: schemas.User = Depends(
     oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return customDevice.updateCustomDevice(db, request, current_user)
+    return await customDevice.updateCustomDevice(db, request, current_user)
 

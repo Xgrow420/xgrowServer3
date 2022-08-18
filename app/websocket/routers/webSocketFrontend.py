@@ -11,7 +11,7 @@ from app.data import database
 from app.schemas.schemas import Settings
 from app.utils.currentUserUtils import userUtils
 import app.utils.stringUtils as stringUtils
-from app.websocket.repository.commandManagerFrontend import getCommandManagerFrontend
+from app.websocket.repository.commandManager import getCommandManager
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend, ConnectionFrontend
 
 router = APIRouter(
@@ -45,9 +45,7 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
         try:
             while True:
                 command = await websocket.receive_text()
-                await getConnectionManagerFrontend().sendMessageToDevice(f"command: {command} was sent...", userName)
-                await getCommandManagerFrontend().commandDispatcher(command=command, xgrowKey=xgrowKey, userName=userName)
-
+                await getCommandManager().sendCommandToXgrow(command=command, xgrowKey=xgrowKey, userName=userName)
 
 
         except WebSocketDisconnect:

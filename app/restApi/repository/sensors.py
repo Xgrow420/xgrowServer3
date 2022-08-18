@@ -20,7 +20,7 @@ def getSensors(currentUser: schemas.User, db: Session):
         return sensors
 
 
-def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
+async def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
 
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
@@ -35,6 +35,8 @@ def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.
         db.add(newSensors)
         db.commit()
         db.refresh(newSensors)
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
 
         return 'created'
     else:
@@ -42,7 +44,7 @@ def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.
                             detail=f"[!] Sensors already exists!")
 
 
-def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
+async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
 
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
@@ -54,5 +56,6 @@ def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.
     else:
         sensors.update(request.dict())
         db.commit()
-
+        if currentUser.userType:
+            await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
         return 'updated'

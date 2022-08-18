@@ -19,9 +19,9 @@ def getPreferences(current_user: schemas.User = Depends(oauth2.getCurrentUser), 
     return preferences.getPreferences(current_user,db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def createPreferences(request: schemasPreferences.PreferencesToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return preferences.createPreferences(request,current_user,db)
+async def createPreferences(request: schemasPreferences.PreferencesToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await preferences.createPreferences(request,current_user,db)
 
 @router.put('/', status_code=status.HTTP_201_CREATED)
-def updatePot(request: schemasPreferences.PreferencesToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return preferences.updatePreferences(request, current_user, db)
+async def updatePot(request: schemasPreferences.PreferencesToModify, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await preferences.updatePreferences(request, current_user, db)
