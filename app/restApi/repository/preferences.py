@@ -7,6 +7,7 @@ from app.schemas import schemas
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
@@ -32,6 +33,9 @@ async def createPreferences(request: schemasPreferences.PreferencesToModify, cur
             db.refresh(newPreferences)
             if currentUser.userType:
                 await getConnectionManagerXgrow().sendMessageToDevice(f"/download preferences", xgrowKey)
+            else:
+                userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+                await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change preferences", userName)
 
             return newPreferences
     else:
@@ -52,6 +56,10 @@ async def updatePreferences(request: schemasPreferences.PreferencesToModify, cur
         db.commit()
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download preferences", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change preferences", userName)
+
         return 'updated'
 
 

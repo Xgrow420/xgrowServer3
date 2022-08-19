@@ -84,7 +84,7 @@ async def get():
 
 
 @router.websocket("/")
-async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client_id: str = "empty",
+async def webSocketXgrow(websocket: WebSocket, csrf_token: str = "", client_id: str = "empty",
                               Authorize: AuthJWT = Depends(), db: Session = Depends(dataBase)):
     await websocket.accept()
     try:
@@ -105,7 +105,7 @@ async def web_socket_endpoint(websocket: WebSocket, csrf_token: str = "", client
             #await websocket.close() #<<=== niepotrzebne
             # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
     except AuthJWTException:
-        await websocket.send_text("login failed...")
+        await websocket.send_text("[Server] webSocket login failed...")
         await websocket.close()
 
 

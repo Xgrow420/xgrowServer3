@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session, Query
 from app.data import models
 from app.schemas import schemas, schemasPot
 from fastapi import HTTPException, status
+
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
 from app.utils.currentUserUtils import userUtils
@@ -27,7 +29,7 @@ def getPot(index: int, currentUser: schemas.User, db: Session):
 
 
 async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                       models.Pot.index == request.index)
 
@@ -53,6 +55,9 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         db.refresh(newPot)
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
         return 'created'
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -73,4 +78,7 @@ async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         db.commit()
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
         return 'updated'

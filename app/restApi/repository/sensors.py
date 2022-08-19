@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session, Query
 from app.data import models
 from app.schemas import schemas, schemasSensors
 from fastapi import HTTPException, status
+
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
 from app.utils.currentUserUtils import userUtils
@@ -22,7 +24,6 @@ def getSensors(currentUser: schemas.User, db: Session):
 
 async def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
 
     if not sensors.first():
@@ -37,6 +38,9 @@ async def createSensors(request: schemasSensors.SensorsToModify, currentUser: sc
         db.refresh(newSensors)
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
 
         return 'created'
     else:
@@ -46,7 +50,6 @@ async def createSensors(request: schemasSensors.SensorsToModify, currentUser: sc
 
 async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
 
     if not sensors.first():
@@ -58,4 +61,7 @@ async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: sc
         db.commit()
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
         return 'updated'

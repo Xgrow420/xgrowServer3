@@ -5,6 +5,7 @@ from app.schemas import schemas, schemasAir
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
@@ -28,6 +29,9 @@ async def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, 
         db.refresh(newAir)
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
         return 'created'
 
 
@@ -44,4 +48,7 @@ async def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, 
         db.commit()
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
         return 'updated'

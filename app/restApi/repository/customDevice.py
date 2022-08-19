@@ -7,6 +7,7 @@ from app.schemas import schemas, schemasCustomDevice
 from app.utils.currentUserUtils import userUtils
 
 from app.utils.schemasUtils import schemasUtils
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
@@ -44,6 +45,7 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
                                               deviceName=request.deviceName,
                                               deviceFunction=request.deviceFunction,
                                               working=request.working,
+                                              reversal=request.reversal,
                                               active=request.active)
 
         db.add(newCustomDevice)
@@ -59,7 +61,9 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
-
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
         return newCustomDevice
 
 
@@ -85,5 +89,7 @@ async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
-
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
         return 'updated'

@@ -84,6 +84,7 @@ class CustomDeviceToModify(BaseModel):
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
+    reversal: bool
     timerTrigger: TimerTriggerToModify
     airSensorTrigger: AirSensorTriggerToModify
     class Config():

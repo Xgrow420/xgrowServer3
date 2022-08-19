@@ -5,6 +5,7 @@ from app.schemas import schemas, schemasFan
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
 
@@ -49,6 +50,9 @@ async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
         db.refresh(newFan)
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change fan {request.index}", userName)
 
         return 'created'
     else:
@@ -70,4 +74,8 @@ async def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
         db.commit()
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
+        else:
+            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
+
         return 'updated'
