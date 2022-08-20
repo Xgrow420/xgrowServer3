@@ -34,7 +34,7 @@ async def createPreferences(request: schemasPreferences.PreferencesToModify, cur
             if currentUser.userType:
                 await getConnectionManagerXgrow().sendMessageToDevice(f"/download preferences", xgrowKey)
             else:
-                userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+                userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
                 await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change preferences", userName)
 
             return newPreferences
@@ -57,7 +57,7 @@ async def updatePreferences(request: schemasPreferences.PreferencesToModify, cur
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download preferences", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change preferences", userName)
 
         return 'updated'

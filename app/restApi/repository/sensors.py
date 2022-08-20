@@ -39,7 +39,7 @@ async def createSensors(request: schemasSensors.SensorsToModify, currentUser: sc
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
 
         return 'created'
@@ -62,6 +62,6 @@ async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: sc
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
         return 'updated'

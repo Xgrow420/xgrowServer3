@@ -51,7 +51,7 @@ async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change fan {request.index}", userName)
 
         return 'created'
@@ -75,7 +75,7 @@ async def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
 
         return 'updated'

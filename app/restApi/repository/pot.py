@@ -56,7 +56,7 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
         return 'created'
     else:
@@ -79,6 +79,6 @@ async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
         return 'updated'

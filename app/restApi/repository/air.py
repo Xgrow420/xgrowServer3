@@ -30,7 +30,7 @@ async def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
         return 'created'
 
@@ -49,6 +49,6 @@ async def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, 
         if currentUser.userType:
             await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
         else:
-            userName = userUtils.asyncGetUserNameForCurrentUser(currentUser)
+            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
             await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
         return 'updated'
