@@ -28,7 +28,7 @@ def getFan(index: int, currentUser: schemas.User, db: Session):
 
 
 async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
                                       models.Fan.index == request.index)
 
@@ -61,7 +61,7 @@ async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
 
 
 async def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
                                       models.Fan.index == request.index)
 

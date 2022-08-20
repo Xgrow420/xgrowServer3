@@ -31,7 +31,7 @@ def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
 
 
 async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                   models.CustomDevice.index == request.index)
 
@@ -68,7 +68,7 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
 
 
 async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                         models.CustomDevice.index == request.index)
 

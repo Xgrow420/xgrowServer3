@@ -29,7 +29,7 @@ def getPot(index: int, currentUser: schemas.User, db: Session):
 
 
 async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                       models.Pot.index == request.index)
 
@@ -65,7 +65,7 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
 
 
 async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                       models.Pot.index == request.index)
 

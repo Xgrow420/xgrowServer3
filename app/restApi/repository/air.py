@@ -16,7 +16,7 @@ def getAir(currentUser: schemas.User, db: Session):
 
 
 async def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
     if not air.first():
@@ -36,7 +36,7 @@ async def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, 
 
 
 async def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
     if not air.first():

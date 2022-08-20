@@ -23,7 +23,7 @@ def getSensors(currentUser: schemas.User, db: Session):
 
 
 async def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
 
     if not sensors.first():
@@ -49,7 +49,7 @@ async def createSensors(request: schemasSensors.SensorsToModify, currentUser: sc
 
 
 async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
 
     if not sensors.first():

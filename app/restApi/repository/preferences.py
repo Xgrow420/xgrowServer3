@@ -18,7 +18,7 @@ def getPreferences(currentUser: schemas.User, db: Session):
 
 
 async def createPreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == xgrowKey)
 
     if not preferences.first():
@@ -45,7 +45,7 @@ async def createPreferences(request: schemasPreferences.PreferencesToModify, cur
 
 
 async def updatePreferences(request: schemasPreferences.PreferencesToModify, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     preferences: Query = db.query(models.Preferences).filter(models.Preferences.xgrowKey == xgrowKey)
 
     if not preferences.first():
