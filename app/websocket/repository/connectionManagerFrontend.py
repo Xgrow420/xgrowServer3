@@ -50,6 +50,7 @@ class ConnectionManagerFrontend:
     async def connect(self, websocket: WebSocket, userName: str):
         for connect in self.active_connections:
             if connect.getUserName() == userName:
+                await connect.getWebSocket().send_text(f"[Server] New webSocket connection was raised for: {userName}")
                 await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {userName}")
                 self.active_connections.remove(connect)
 
