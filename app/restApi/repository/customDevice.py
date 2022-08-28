@@ -7,6 +7,7 @@ from app.schemas import schemas, schemasCustomDevice
 from app.utils.currentUserUtils import userUtils
 
 from app.utils.schemasUtils import schemasUtils
+from app.websocket.repository.commandManager import getCommandManager
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
@@ -32,6 +33,7 @@ def getCustomDevice(db: Session, index: int, currentUser: schemas.User):
 
 async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                   models.CustomDevice.index == request.index)
 
@@ -60,15 +62,21 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
         airSensorTrigger.createAirSensorTrigger(request.airSensorTrigger, currentUser, db)
 
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download customdevice {request.index}",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            #await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change customdevice {request.index}",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            #await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
         return newCustomDevice
 
 
 async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                         models.CustomDevice.index == request.index)
 
@@ -88,8 +96,13 @@ async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
         db.commit()
 
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download customdevice {request.index}",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change customdevice {request.index}",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            #await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
         return 'updated'

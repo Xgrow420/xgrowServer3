@@ -5,6 +5,7 @@ from app.schemas import schemas, schemasFan
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.commandManager import getCommandManager
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
@@ -18,7 +19,7 @@ def getFans(currentUser: schemas.User, db: Session):
 def getFan(index: int, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
-                                      models.Fan.index == index).first()
+                                             models.Fan.index == index).first()
     if not fan:
         # TO Do create mock fan db
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -29,8 +30,9 @@ def getFan(index: int, currentUser: schemas.User, db: Session):
 
 async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
-                                      models.Fan.index == request.index)
+                                             models.Fan.index == request.index)
 
     if not fan.first():
         newFan = models.Fan(xgrowKey=xgrowKey,
@@ -49,10 +51,16 @@ async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
         db.commit()
         db.refresh(newFan)
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download fan {request.index}",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change fan {request.index}", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change fan {request.index}",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+
+            #await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change fan {request.index}", userName)
 
         return 'created'
     else:
@@ -62,8 +70,9 @@ async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
 
 async def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     fan: Query = db.query(models.Fan).filter(models.Fan.xgrowKey == xgrowKey,
-                                      models.Fan.index == request.index)
+                                             models.Fan.index == request.index)
 
     if not fan.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -73,9 +82,14 @@ async def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User, 
         fan.update(request.dict())
         db.commit()
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download fan {request.index}",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            #await getConnectionManagerXgrow().sendMessageToDevice(f"/download fan {request.index}", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change fan {request.index}",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            #await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
 
         return 'updated'

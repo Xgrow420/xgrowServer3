@@ -5,6 +5,7 @@ from app.schemas import schemas, schemasAir
 from fastapi import HTTPException, status
 
 from app.utils.currentUserUtils import userUtils
+from app.websocket.repository.commandManager import getCommandManager
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 
@@ -17,6 +18,7 @@ def getAir(currentUser: schemas.User, db: Session):
 
 async def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
     if not air.first():
@@ -28,15 +30,19 @@ async def createAir(request: schemasAir.AirToModify, currentUser: schemas.User, 
         db.commit()
         db.refresh(newAir)
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download air", xgrowKey=xgrowKey,
+                                                         userName=userName)
+            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change air", xgrowKey=xgrowKey,
+                                                            userName=userName)
+            # await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
         return 'created'
 
 
 async def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     air: Query = db.query(models.Air).filter(models.Air.xgrowKey == xgrowKey)
 
     if not air.first():
@@ -47,8 +53,13 @@ async def updateAir(request: schemasAir.AirToModify, currentUser: schemas.User, 
         air.update(request.dict())
         db.commit()
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download air",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download air", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change air",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            # await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change air", userName)
         return 'updated'

@@ -4,6 +4,7 @@ from app.data import models
 from app.schemas import schemas, schemasSensors
 from fastapi import HTTPException, status
 
+from app.websocket.repository.commandManager import getCommandManager
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
@@ -24,6 +25,7 @@ def getSensors(currentUser: schemas.User, db: Session):
 
 async def createSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
 
     if not sensors.first():
@@ -37,10 +39,15 @@ async def createSensors(request: schemasSensors.SensorsToModify, currentUser: sc
         db.commit()
         db.refresh(newSensors)
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download sensors",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            #await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change sensors",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            #await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
 
         return 'created'
     else:
@@ -50,6 +57,7 @@ async def createSensors(request: schemasSensors.SensorsToModify, currentUser: sc
 
 async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     sensors: Query = db.query(models.Sensors).filter(models.Sensors.xgrowKey == xgrowKey)
 
     if not sensors.first():
@@ -60,8 +68,13 @@ async def updateSensors(request: schemasSensors.SensorsToModify, currentUser: sc
         sensors.update(request.dict())
         db.commit()
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download sensors",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            #await getConnectionManagerXgrow().sendMessageToDevice(f"/download sensors", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change sensors",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            #await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change sensors", userName)
         return 'updated'

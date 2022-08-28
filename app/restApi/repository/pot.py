@@ -4,6 +4,7 @@ from app.data import models
 from app.schemas import schemas, schemasPot
 from fastapi import HTTPException, status
 
+from app.websocket.repository.commandManager import getCommandManager
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
@@ -19,7 +20,7 @@ def getPots(currentUser: schemas.User, db: Session):
 def getPot(index: int, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
-                                      models.Pot.index == index).first()
+                                             models.Pot.index == index).first()
     if not pot:
         # TO Do create mock fan db
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -30,8 +31,9 @@ def getPot(index: int, currentUser: schemas.User, db: Session):
 
 async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
-                                      models.Pot.index == request.index)
+                                             models.Pot.index == request.index)
 
     if not pot.first():
         newPot = models.Pot(xgrowKey=xgrowKey,
@@ -54,10 +56,15 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         db.commit()
         db.refresh(newPot)
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download pot {request.index}",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change pot {request.index}",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            # await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
         return 'created'
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -66,8 +73,9 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
 
 async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
-                                      models.Pot.index == request.index)
+                                             models.Pot.index == request.index)
 
     if not pot.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -77,8 +85,13 @@ async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, 
         pot.update(request.dict())
         db.commit()
         if currentUser.userType:
-            await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download pot {request.index}",
+                                                         xgrowKey=xgrowKey,
+                                                         userName=userName)
+            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download pot {request.index}", xgrowKey)
         else:
-            userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
-            await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
+            await getCommandManager().sendCommandToFrontend(command=f"[Server] Xgrow was change pot {request.index}",
+                                                            xgrowKey=xgrowKey,
+                                                            userName=userName)
+            # await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change pot {request.index}", userName)
         return 'updated'
