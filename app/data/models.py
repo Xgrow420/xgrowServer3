@@ -42,23 +42,6 @@ class Pot(Base):
     automaticWateringCycleDuration = Column(Integer)
     manualWateringTime = Column(Integer)
 
-class Fan(Base):
-    __tablename__ = 'fan'
-
-    id = Column(Integer, primary_key=True, index=True)
-    xgrowKey = Column(String)
-    #device Section
-    index = Column(Integer)
-    fanName = Column(String)
-    active = Column(Boolean, default=False)
-    working = Column(Boolean, default=False)
-    normalMode = Column(Boolean, default=False)
-    coldMode = Column(Boolean, default=False)
-    hotMode = Column(Boolean, default=False)
-    tempMax = Column(Integer)
-    tempMin = Column(Integer)
-    temperatureStatus = Column(String)  # ENUM <=========
-
 
 class Preferences(Base):
     __tablename__ = 'preferences'
@@ -100,6 +83,7 @@ class CustomDevice(Base):
     deviceFunction = Column(String)  # SlotFunction.TIMER  ENUM TO DO
     working = Column(Boolean)
     reversal = Column(Boolean)
+    deviceType = Column(String)  # enum
 
     timerTrigger = relationship("TimerTrigger", back_populates="linkedDevice", uselist=False)
     airSensorTrigger = relationship("AirSensorTrigger", back_populates="linkedDevice", uselist=False)
@@ -122,6 +106,7 @@ class TimerTrigger(Base):
     minuteStop = Column(Integer)
     lightCycle = Column(Integer)
     timerType = Column(String) #Enum
+    deviceType = Column(String)
 
     customDevice_id = Column(Integer, ForeignKey('customDevice.id'))
     linkedDevice = relationship('CustomDevice', back_populates="timerTrigger")
@@ -137,6 +122,7 @@ class AirSensorTrigger(Base):
     functionType = Column(String)
     value = Column(Integer)
     compensation = Column(Integer)
+    deviceType = Column(String)
 
     customDevice_id = Column(Integer, ForeignKey('customDevice.id'))
     linkedDevice = relationship('CustomDevice', back_populates="airSensorTrigger")

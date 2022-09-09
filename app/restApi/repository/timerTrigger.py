@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from app.restApi.repository import customDevice
 from app.utils.currentUserUtils import userUtils
 
+deviceType = ""
 
 def getTimerTriggers(currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
@@ -16,7 +17,7 @@ def getTimerTriggers(currentUser: schemas.User, db: Session):
 def getTimerTrigger(index: int, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
-                                      models.TimerTrigger.index == index).first()
+                                                               models.TimerTrigger.index == index).first()
     if not timerTrigger:
         # TO Do create mock fan db
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -28,9 +29,10 @@ def getTimerTrigger(index: int, currentUser: schemas.User, db: Session):
 def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
-                                      models.TimerTrigger.index == request.index)
+                                                               models.TimerTrigger.deviceType == request.deviceType,
+                                                               models.TimerTrigger.index == request.index)
 
-    cD = customDevice.getCustomDevice(db, request.index, currentUser)
+    cD = customDevice.getCustomDevice(db, request.index, request.deviceType, currentUser)
     if cD:
         if not timerTrigger.first():
             newTimerTrigger = models.TimerTrigger(
@@ -42,6 +44,7 @@ def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, curren
                 minuteStop=request.minuteStop,
                 lightCycle=request.lightCycle,
                 timerType=request.timerType,
+                deviceType=request.deviceType,
                 customDevice_id=cD.id)
             db.add(newTimerTrigger)
             db.commit()
@@ -54,10 +57,11 @@ def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, curren
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"[!] first create a CustomDevice with index: {request.index} to be able to create linked timerTrigger")
 
+
 def updateTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
-                                      models.TimerTrigger.index == request.index)
+                                                               models.TimerTrigger.index == request.index)
 
     if not timerTrigger.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

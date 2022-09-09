@@ -9,7 +9,8 @@ from app.utils.currentUserUtils import userUtils
 
 def getAirSensorTriggers(currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(models.AirSensorTrigger.xgrowKey == xgrowKey).all()
+    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
+        models.AirSensorTrigger.xgrowKey == xgrowKey).all()
     return airSensorTrigger
 
 
@@ -26,14 +27,15 @@ def getAirSensorTrigger(index: int, currentUser: schemas.User, db: Session):
         return airSensorTrigger
 
 
-def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify, currentUser: schemas.User,
+def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify,
+                           currentUser: schemas.User,
                            db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
-        models.AirSensorTrigger.xgrowKey == xgrowKey,
-        models.AirSensorTrigger.index == request.index)
+    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(models.AirSensorTrigger.xgrowKey == xgrowKey,
+                                                                       models.AirSensorTrigger.deviceType == request.deviceType,
+                                                                       models.AirSensorTrigger.index == request.index)
 
-    cD = customDevice.getCustomDevice(db, request.index, currentUser)
+    cD = customDevice.getCustomDevice(db, request.index, request.deviceType, currentUser)
     if cD:
         if not airSensorTrigger.first():
             newAirSensorTrigger = models.AirSensorTrigger(
@@ -42,6 +44,7 @@ def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify
                 functionType=request.functionType,
                 value=request.value,
                 compensation=request.compensation,
+                deviceType=request.deviceType,
                 customDevice_id=cD.id)
             db.add(newAirSensorTrigger)
             db.commit()
@@ -55,10 +58,12 @@ def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify
                             detail=f"[!] first create a CustomDevice with index: {request.index} to be able to create linked airSensorTrigger")
 
 
-def updateAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify, currentUser: schemas.User, db: Session):
+def updateAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify, currentUser: schemas.User,
+                           db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(models.AirSensorTrigger.xgrowKey == xgrowKey,
-                                                               models.AirSensorTrigger.index == request.index)
+                                                                       models.AirSensorTrigger.deviceType == request.deviceType,
+                                                                       models.AirSensorTrigger.index == request.index)
 
     if not airSensorTrigger.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

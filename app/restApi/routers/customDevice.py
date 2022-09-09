@@ -13,14 +13,15 @@ router = APIRouter(
 
 dataBase = database.getDataBase
 
+deviceType = "CUSTOM_DEVICE"
 
 @router.get('/', response_model=List[schemasCustomDevice.CustomDeviceToModify])
 def getAllDevicesForCurrentUser(current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return customDevice.getCustomDevices(current_user, db)
+    return customDevice.getCustomDevices(current_user, deviceType, db)
 
 @router.get('/{deviceIndex}', response_model=schemasCustomDevice.CustomDeviceToModify)
 def getDeviceForCurrentUser(deviceIndex: int, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return customDevice.getCustomDevice(db, deviceIndex, current_user)
+    return customDevice.getCustomDevice(db, deviceIndex, deviceType, current_user)
 
 @router.post('/', status_code=status.HTTP_202_ACCEPTED, response_model=schemasCustomDevice.CustomDeviceToModify)
 async def setDeviceForCurrentUser(request: schemasCustomDevice.CustomDeviceToModify, current_user: schemas.User = Depends(

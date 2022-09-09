@@ -11,6 +11,7 @@ class TimerTrigger(BaseModel):
     minuteStop: int
     lightCycle: int
     timerType: str
+    deviceType: str  # enum
 
 
     class Config():
@@ -25,6 +26,7 @@ class TimerTriggerToModify(BaseModel):
     minuteStop: int
     lightCycle: int
     timerType: str
+    deviceType: str  # enum
 
     class Config():
         orm_mode = True
@@ -37,6 +39,7 @@ class AirSensorTrigger(BaseModel):
     functionType: str
     value: int
     compensation: int
+    deviceType: str  # enum
 
     class Config():
         orm_mode = True
@@ -48,6 +51,7 @@ class AirSensorTriggerToModify(BaseModel):
     functionType: str
     value: int
     compensation: int
+    deviceType: str  # enum
 
     class Config():
         orm_mode = True
@@ -58,6 +62,7 @@ class RawCustomDevice(BaseModel):
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
+    deviceType: str  # enum
     class Config():
         orm_mode = True
 
@@ -71,6 +76,7 @@ class CustomDevice(BaseModel):
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
     reversal: bool
+    deviceType: str  # enum
     timerTrigger: TimerTriggerToModify
     airSensorTrigger: AirSensorTriggerToModify
     class Config():
@@ -85,6 +91,7 @@ class CustomDeviceToModify(BaseModel):
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
     working: bool
     reversal: bool
+    deviceType: str  # enum
     timerTrigger: TimerTriggerToModify
     airSensorTrigger: AirSensorTriggerToModify
     class Config():

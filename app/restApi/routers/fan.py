@@ -2,9 +2,9 @@ from typing import List
 from fastapi import APIRouter, Depends, status
 from app.data import database
 from app.security import oauth2
-from app.schemas import schemas, schemasFan
+from app.schemas import schemas, schemasCustomDevice
 from sqlalchemy.orm import Session
-from app.restApi.repository import fan
+from app.restApi.repository import customDevice
 
 router = APIRouter(
     prefix="/api/fan",
@@ -13,19 +13,20 @@ router = APIRouter(
 
 dataBase = database.getDataBase
 
+deviceType = "FAN"
 
-@router.get('/', response_model=List[schemasFan.FanToModify])
+@router.get('/', response_model=List[schemasCustomDevice.CustomDeviceToModify])
 def getFans(currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return fan.getFans(currentUser, db)
+    return customDevice.getCustomDevices(currentUser, deviceType, db)
 
-@router.get('/{index}', response_model=schemasFan.FanToModify)
+@router.get('/{index}', response_model=schemasCustomDevice.CustomDeviceToModify)
 def getFan(index: int, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return fan.getFan(index, currentUser, db)
+    return customDevice.getCustomDevice(db, index, deviceType, currentUser)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def createFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return await fan.createFan(request, currentUser, db)
+async def createFan(request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await customDevice.createCustomDevice(db, request, currentUser)
 
 @router.put('/', status_code=status.HTTP_201_CREATED)
-async def updateFan(request: schemasFan.FanToModify, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    return await fan.updateFan(request, currentUser, db)
+async def updateFan(request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
+    return await customDevice.updateCustomDevice(db, request, currentUser)
