@@ -9,8 +9,6 @@ from app.utils.currentUserUtils import userUtils
 from app.utils.schemasUtils import schemasUtils
 from app.websocket.repository.commandManager import getCommandManager
 
-deviceType = "CUSTOM_DEVICE"
-
 
 def getCustomDevices(currentUser: schemas.User, _deviceType: str, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
@@ -38,7 +36,7 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
-                                                         models.CustomDevice.deviceType == deviceType,
+                                                         models.CustomDevice.deviceType == request.deviceType,
                                                          models.CustomDevice.index == request.index)
 
     if device.first():
@@ -86,7 +84,7 @@ async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
     userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
-                                                               models.CustomDevice.deviceType == deviceType,
+                                                               models.CustomDevice.deviceType == request.deviceType,
                                                                models.CustomDevice.index == request.index)
 
     if not customDevice.first():

@@ -6,7 +6,6 @@ from fastapi import HTTPException, status
 from app.restApi.repository import customDevice
 from app.utils.currentUserUtils import userUtils
 
-deviceType = ""
 
 def getTimerTriggers(currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
@@ -61,6 +60,7 @@ def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, curren
 def updateTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
     timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
+                                                               models.TimerTrigger.deviceType == request.deviceType,
                                                                models.TimerTrigger.index == request.index)
 
     if not timerTrigger.first():

@@ -9,8 +9,6 @@ from app.utils.currentUserUtils import userUtils
 from app.utils.schemasUtils import schemasUtils
 from app.websocket.repository.commandManager import getCommandManager
 
-deviceType = "FAN"
-
 
 def getFans(currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
