@@ -47,6 +47,7 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
         newCustomDevice = models.CustomDevice(xgrowKey=xgrowKey,
                                               index=request.index,
                                               deviceName=request.deviceName,
+                                              icon=request.icon,
                                               deviceFunction=request.deviceFunction,
                                               working=request.working,
                                               reversal=request.reversal,
@@ -67,16 +68,15 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
         airSensorTrigger.createAirSensorTrigger(request.airSensorTrigger, currentUser, db)
 
         if currentUser.userType:
-            await getCommandManager().sendCommandToXgrow(command=f"/download customdevice {request.index}",
-                                                         xgrowKey=xgrowKey,
-                                                         userName=userName)
-            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download {request.deviceType} {request.index}",
+                                                     xgrowKey=xgrowKey,
+                                                     userName=userName)
         else:
             await getCommandManager().sendCommandToFrontend(
-                command=f"[Server] Xgrow was change customdevice {request.index}",
+                command=f"[Server] Xgrow was change {request.deviceType} {request.index}",
                 xgrowKey=xgrowKey,
                 userName=userName)
-            # await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
+
         return newCustomDevice
 
 
@@ -105,14 +105,12 @@ async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
         db.commit()
 
         if currentUser.userType:
-            await getCommandManager().sendCommandToXgrow(command=f"/download customdevice {request.index}",
-                                                         xgrowKey=xgrowKey,
-                                                         userName=userName)
-            # await getConnectionManagerXgrow().sendMessageToDevice(f"/download customdevice {request.index}", xgrowKey)
+            await getCommandManager().sendCommandToXgrow(command=f"/download {request.deviceType} {request.index}",
+                                                     xgrowKey=xgrowKey,
+                                                     userName=userName)
         else:
             await getCommandManager().sendCommandToFrontend(
-                command=f"[Server] Xgrow was change customdevice {request.index}",
+                command=f"[Server] Xgrow was change {request.deviceType} {request.index}",
                 xgrowKey=xgrowKey,
                 userName=userName)
-            # await getConnectionManagerFrontend().sendMessageToDevice(f"[Server] Xgrow was change customdevice {request.index}", userName)
         return 'updated'

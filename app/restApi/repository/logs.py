@@ -23,15 +23,15 @@ def createLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db:
             xgrowKey=xgrowKey,
             airTemperatureLogList=request.airTemperatureLogList,
             airHumidityLogList=request.airHumidityLogList,
-            timeLogList=request.timeLogList,
+            events=request.events,
+            pot0MoistureLogList=request.pot0MoistureLogList,
             pot1MoistureLogList=request.pot1MoistureLogList,
             pot2MoistureLogList=request.pot2MoistureLogList,
             pot3MoistureLogList=request.pot3MoistureLogList,
             pot4MoistureLogList=request.pot4MoistureLogList,
             pot5MoistureLogList=request.pot5MoistureLogList,
             pot6MoistureLogList=request.pot6MoistureLogList,
-            pot7MoistureLogList=request.pot7MoistureLogList,
-            pot8MoistureLogList=request.pot8MoistureLogList
+            pot7MoistureLogList=request.pot7MoistureLogList
         )
         db.add(newLogs)
         db.commit()

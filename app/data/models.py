@@ -78,6 +78,7 @@ class CustomDevice(Base):
     xgrowKey = Column(String)
     #device Section
     index = Column(Integer)
+    icon = Column(String)
     deviceName = Column(String)
     active = Column(Boolean)
     deviceFunction = Column(String)  # SlotFunction.TIMER  ENUM TO DO
@@ -121,6 +122,8 @@ class AirSensorTrigger(Base):
     index = Column(Integer)
     functionType = Column(String)
     value = Column(Integer)
+    maxValue = Column(Integer)
+    minValue = Column(Integer)
     compensation = Column(Integer)
     deviceType = Column(String)
 
@@ -150,8 +153,9 @@ class Logs(Base):
 
     airTemperatureLogList = Column(String)
     airHumidityLogList = Column(String)
-    timeLogList = Column(String)
+    events = Column(String)
 
+    pot0MoistureLogList = Column(String)
     pot1MoistureLogList = Column(String)
     pot2MoistureLogList = Column(String)
     pot3MoistureLogList = Column(String)
@@ -159,5 +163,4 @@ class Logs(Base):
     pot5MoistureLogList = Column(String)
     pot6MoistureLogList = Column(String)
     pot7MoistureLogList = Column(String)
-    pot8MoistureLogList = Column(String)
 

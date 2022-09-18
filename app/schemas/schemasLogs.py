@@ -6,7 +6,8 @@ class Logs(BaseModel):
     xgrowKey: str
     airTemperatureLogList: str
     airHumidityLogList: str
-    timeLogList: str
+    events: str
+    pot0MoistureLogList: str
     pot1MoistureLogList: str
     pot2MoistureLogList: str
     pot3MoistureLogList: str
@@ -14,7 +15,6 @@ class Logs(BaseModel):
     pot5MoistureLogList: str
     pot6MoistureLogList: str
     pot7MoistureLogList: str
-    pot8MoistureLogList: str
     
     class Config():
         orm_mode = True
@@ -23,7 +23,8 @@ class LogsToModify(BaseModel):
 
     airTemperatureLogList: str
     airHumidityLogList: str
-    timeLogList: str
+    events: str
+    pot0MoistureLogList: str
     pot1MoistureLogList: str
     pot2MoistureLogList: str
     pot3MoistureLogList: str
@@ -31,7 +32,6 @@ class LogsToModify(BaseModel):
     pot5MoistureLogList: str
     pot6MoistureLogList: str
     pot7MoistureLogList: str
-    pot8MoistureLogList: str
 
     class Config():
         orm_mode = True

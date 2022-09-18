@@ -7,24 +7,24 @@ from app.restApi.repository import customDevice
 from app.utils.currentUserUtils import userUtils
 
 
-def getAirSensorTriggers(currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
-        models.AirSensorTrigger.xgrowKey == xgrowKey).all()
-    return airSensorTrigger
-
-
-def getAirSensorTrigger(index: int, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-    airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
-        models.AirSensorTrigger.xgrowKey == xgrowKey,
-        models.AirSensorTrigger.index == index).first()
-    if not airSensorTrigger:
-        # TO Do create mock fan db
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"timerTrigger with index {index} not found")
-    else:
-        return airSensorTrigger
+# def getAirSensorTriggers(currentUser: schemas.User, db: Session):
+#     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+#     airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
+#         models.AirSensorTrigger.xgrowKey == xgrowKey).all()
+#     return airSensorTrigger
+#
+#
+# def getAirSensorTrigger(index: int, currentUser: schemas.User, db: Session):
+#     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+#     airSensorTrigger: Query = db.query(models.AirSensorTrigger).filter(
+#         models.AirSensorTrigger.xgrowKey == xgrowKey,
+#         models.AirSensorTrigger.index == index).first()
+#     if not airSensorTrigger:
+#         # TO Do create mock fan db
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail=f"timerTrigger with index {index} not found")
+#     else:
+#         return airSensorTrigger
 
 
 def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify,
@@ -43,6 +43,8 @@ def createAirSensorTrigger(request: schemasCustomDevice.AirSensorTriggerToModify
                 index=request.index,
                 functionType=request.functionType,
                 value=request.value,
+                maxValue=request.maxValue,
+                minValue=request.minValue,
                 compensation=request.compensation,
                 deviceType=request.deviceType,
                 customDevice_id=cD.id)

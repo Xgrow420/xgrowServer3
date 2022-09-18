@@ -38,6 +38,8 @@ class AirSensorTrigger(BaseModel):
     index: int
     functionType: str
     value: int
+    maxValue: int
+    minValue: int
     compensation: int
     deviceType: str  # enum
 
@@ -50,6 +52,8 @@ class AirSensorTriggerToModify(BaseModel):
     index: int
     functionType: str
     value: int
+    maxValue: int
+    minValue: int
     compensation: int
     deviceType: str  # enum
 
@@ -71,6 +75,7 @@ class CustomDevice(BaseModel):
 
     xgrowKey: str
     index: int
+    icon: str
     deviceName: str
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO
@@ -86,6 +91,7 @@ class CustomDevice(BaseModel):
 class CustomDeviceToModify(BaseModel):
 
     index: int
+    icon: str
     deviceName: str
     active: bool
     deviceFunction: str #SlotFunction.TIMER  ENUM TO DO

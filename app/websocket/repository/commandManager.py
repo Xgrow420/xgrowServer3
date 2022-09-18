@@ -16,7 +16,7 @@ class CommandManager():
         if CommandManager._instance is not None:
             raise Exception("CommandManagerFrontend class is a singleton!")
         else:
-            self.task = ""
+            self.task = {}
             CommandManager._instance = self
 
 
@@ -24,13 +24,14 @@ class CommandManager():
 
         if not await getConnectionManagerXgrow().sendMessageToDevice(message=command, xgrowKey=xgrowKey):
             await getConnectionManagerFrontend().sendMessageToDevice("[Server] Connection ERROR", userName=userName)
+            return False
 
 
     async def sendCommandToFrontend(self, command: str, xgrowKey: str, userName: str):
 
         if not await getConnectionManagerFrontend().sendMessageToDevice(message=command, userName=userName):
             await getConnectionManagerXgrow().sendMessageToDevice(f"[Server] Connection ERROR {userName} not found", xgrowKey=xgrowKey)
-
+            return False
 
 def getCommandManager():
     commandManagerFrontend: CommandManager = CommandManager.getInstance()

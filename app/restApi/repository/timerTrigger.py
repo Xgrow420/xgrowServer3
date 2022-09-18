@@ -7,22 +7,22 @@ from app.restApi.repository import customDevice
 from app.utils.currentUserUtils import userUtils
 
 
-def getTimerTriggers(currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-    timerTriggers: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey).all()
-    return timerTriggers
-
-
-def getTimerTrigger(index: int, currentUser: schemas.User, db: Session):
-    xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
-    timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
-                                                               models.TimerTrigger.index == index).first()
-    if not timerTrigger:
-        # TO Do create mock fan db
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"timerTrigger with index {index} not found")
-    else:
-        return timerTrigger
+# def getTimerTriggers(currentUser: schemas.User, db: Session):
+#     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+#     timerTriggers: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey).all()
+#     return timerTriggers
+#
+#
+# def getTimerTrigger(index: int, currentUser: schemas.User, db: Session):
+#     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+#     timerTrigger: Query = db.query(models.TimerTrigger).filter(models.TimerTrigger.xgrowKey == xgrowKey,
+#                                                                models.TimerTrigger.index == index).first()
+#     if not timerTrigger:
+#         # TO Do create mock fan db
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail=f"timerTrigger with index {index} not found")
+#     else:
+#         return timerTrigger
 
 
 def createTimerTrigger(request: schemasCustomDevice.TimerTriggerToModify, currentUser: schemas.User, db: Session):
