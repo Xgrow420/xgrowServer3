@@ -3,7 +3,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_jwt_auth import AuthJWT
 
 from app.data import database, models
-from app.data.models import User
 from app.security import token
 from app.security.hashing import Hash
 from sqlalchemy.orm import Session
@@ -28,7 +27,6 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
                             detail=f"Incorrect password")
 
     access_token = token.create_access_token(data={"sub": user.name})
-
     accessWebSocketToken = Authorize.create_access_token(subject=user.name, fresh=True, expires_time=False)
     refreshWebSocketToken = Authorize.create_refresh_token(subject=user.name)
 

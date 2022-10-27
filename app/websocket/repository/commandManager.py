@@ -21,14 +21,12 @@ class CommandManager():
 
 
     async def sendCommandToXgrow(self, command: str, xgrowKey: str, userName: str):
-
         if not await getConnectionManagerXgrow().sendMessageToDevice(message=command, xgrowKey=xgrowKey):
             await getConnectionManagerFrontend().sendMessageToDevice("[Server] Connection ERROR", userName=userName)
             return False
 
 
     async def sendCommandToFrontend(self, command: str, xgrowKey: str, userName: str):
-
         if not await getConnectionManagerFrontend().sendMessageToDevice(message=command, userName=userName):
             await getConnectionManagerXgrow().sendMessageToDevice(f"[Server] Connection ERROR {userName} not found", xgrowKey=xgrowKey)
             return False

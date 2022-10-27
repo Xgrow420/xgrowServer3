@@ -5,11 +5,11 @@ from app.schemas import schemas, schemasSensors
 from fastapi import HTTPException, status
 
 from app.websocket.repository.commandManager import getCommandManager
-from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
-from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
 from app.utils.currentUserUtils import userUtils
 
+
+#DEPRECATED CLASS
 
 def getSensors(currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)

@@ -1,7 +1,7 @@
 
 from sqlalchemy.orm import Session, Query
 from app.data import models
-from app.schemas import schemas
+from app.schemas import schemas, schemasXgrowKeys
 from fastapi import HTTPException, status
 from app.security.hashing import Hash
 
@@ -9,10 +9,17 @@ from app.security.hashing import Hash
 
 
 def createUser(request: schemas.User, db: Session):
-    user: Query = db.query(models.User).filter(models.User.xgrowKey == request.xgrowKey)
-    if not user.first():
 
-        #====== Device profile
+    xgrowKey = db.query(models.XgrowKeys).filter(models.XgrowKeys.xgrowKey == request.xgrowKey).first()
+    if xgrowKey:
+        xgrowKey: schemasXgrowKeys.XgrowKey
+        print(f"xgrow key is valid! {xgrowKey.ban}, {xgrowKey.reason}")
+
+        db.query(models.User).filter(models.User.xgrowKey == request.xgrowKey).delete(synchronize_session=False)
+        db.query(models.User).filter(models.User.name == request.xgrowKey).delete(synchronize_session=False)
+        db.commit()
+
+
         new_device = models.User(
             name=request.xgrowKey, xgrowKey=request.name, password=Hash.bcrypt(request.password), userType=False)
         db.add(new_device)
@@ -27,7 +34,12 @@ def createUser(request: schemas.User, db: Session):
         db.commit()
         db.refresh(new_user)
 
-        return new_user
+        return {"status": "registered"}
+
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Your device is not existed in Xgrow Data base, or you are banned...")
+
 
 def getDeviceData(userSchema: schemas.User, db: Session):
 

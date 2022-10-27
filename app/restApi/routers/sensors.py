@@ -13,7 +13,7 @@ router = APIRouter(
 
 dataBase = database.getDataBase
 
-
+#DEPRECATED
 @router.get('/', response_model=schemasSensors.SensorsToModify)
 def getSensors(current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
     return sensors.getSensors(current_user,db)

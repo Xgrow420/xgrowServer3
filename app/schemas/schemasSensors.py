@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-
+#DEPRECATED
 class Sensors(BaseModel):
 
     xgrowKey: str

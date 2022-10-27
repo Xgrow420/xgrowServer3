@@ -42,6 +42,8 @@ async def webSocketFrontend(websocket: WebSocket, csrf_token: str = "", client_i
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
         connection = await getConnectionManagerFrontend().connect(websocket=websocket, userName=userName)
 
+        print(f"ws Front {userName}, {xgrowKey}")
+
         try:
             while True:
                 command = await websocket.receive_text()
@@ -49,7 +51,7 @@ async def webSocketFrontend(websocket: WebSocket, csrf_token: str = "", client_i
 
 
         except WebSocketDisconnect:
-            getConnectionManagerFrontend().disconnect(userName=userName)
+            await getConnectionManagerFrontend().disconnect(userName=userName)
             # await websocket.close() #<<=== niepotrzebne
             # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
     except AuthJWTException:

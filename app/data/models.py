@@ -131,16 +131,15 @@ class AirSensorTrigger(Base):
     linkedDevice = relationship('CustomDevice', back_populates="airSensorTrigger")
     #end
 
-class Sensors(Base):
-    __tablename__ = 'sensors'
+class XgrowKeys(Base):
+    __tablename__ = 'xgrowKeys'
 
     id = Column(Integer, primary_key=True, index=True)
     xgrowKey = Column(String)
     #device Section
-    airTemperature = Column(Integer)
-    airHumidity = Column(Integer)
-    potsMoistureList = Column(String)
-    camera = Column(String)
+    ban = Column(Boolean)
+    reason = Column(String)
+    abonament = Column(Integer)
 
 
 

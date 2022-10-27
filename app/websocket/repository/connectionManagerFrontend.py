@@ -58,9 +58,10 @@ class ConnectionManagerFrontend:
         self.active_connections.append(connection)
         return connection
 
-    def disconnect(self, userName):
+    async def disconnect(self, userName):
         for connection in self.active_connections:
             if connection.getConnectionByUserName(userName):
+                #await connection.getWebSocket().close(1000, "connection close")
                 print(f"{connection.getUserName()} disconnected")
                 self.active_connections.remove(connection)
 

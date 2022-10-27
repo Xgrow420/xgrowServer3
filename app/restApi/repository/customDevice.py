@@ -38,6 +38,9 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
     device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                          models.CustomDevice.deviceType == request.deviceType,
                                                          models.CustomDevice.index == request.index)
+    #if currentUser.userType:
+    #    raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+    #                        detail=f"[!]")
 
     if device.first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,

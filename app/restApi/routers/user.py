@@ -12,8 +12,8 @@ router = APIRouter(
 
 dataBase = database.getDataBase
 
-
-@router.post('/', response_model=schemas.ShowUser)
+#TODO: usunac showUser bo po co maja to widziec
+@router.post('/')
 def create_user(request: schemas.User, db: Session = Depends(dataBase)):
     return user.createUser(request, db)
 

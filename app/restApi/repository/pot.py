@@ -34,6 +34,9 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
     userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                              models.Pot.index == request.index)
+    #if currentUser.userType:
+    #    raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+    #                        detail=f"[!]")
 
     if not pot.first():
         newPot = models.Pot(xgrowKey=xgrowKey,

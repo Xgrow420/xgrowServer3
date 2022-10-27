@@ -58,9 +58,10 @@ class ConnectionManagerXgrow:
         self.active_connections.append(connection)
         return connection
 
-    def disconnect(self, xgrowKey):
+    async def disconnect(self, xgrowKey):
         for connection in self.active_connections:
             if connection.getConnectionByXgrowKey(xgrowKey):
+                #await connection.getWebSocket().close(1000, "connection close")
                 print(f"{connection.getXgrowKey()} disconnected")
                 self.active_connections.remove(connection)
 

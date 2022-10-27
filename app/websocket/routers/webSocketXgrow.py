@@ -95,13 +95,15 @@ async def webSocketXgrow(websocket: WebSocket, csrf_token: str = "", client_id: 
         userName = await userUtils.asyncGetUserNameForCurrentUser(user)
         connection = await getConnectionManagerXgrow().connect(websocket=websocket, xgrowKey=xgrowKey)
 
+        print(uName, user.name, userName, xgrowKey)
+
         try:
             while True:
                 command = await websocket.receive_text()
                 await getCommandManager().sendCommandToFrontend(command=command, xgrowKey=xgrowKey, userName=userName)
 
         except WebSocketDisconnect:
-            getConnectionManagerXgrow().disconnect(xgrowKey)
+            await getConnectionManagerXgrow().disconnect(xgrowKey)
             #await websocket.close() #<<=== niepotrzebne
             # await manager.broadcast(f"Client #{Authorize.get_jwt_subject()} left the chat")
     except AuthJWTException:
