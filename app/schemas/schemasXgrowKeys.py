@@ -7,7 +7,20 @@ class XgrowKey(BaseModel):
     #device Section
     ban: bool
     reason: str
-    abonament: int
+    subscription: int
+
+    class Config():
+        orm_mode = True
+
+
+class XgrowKeyToShow(BaseModel):
+
+    #xgrowKey: str
+    #device Section
+    userName: str
+    ban: bool
+    reason: str
+    subscription: int
 
     class Config():
         orm_mode = True

@@ -95,7 +95,6 @@ async def webSocketXgrow(websocket: WebSocket, csrf_token: str = "", client_id: 
         userName = await userUtils.asyncGetUserNameForCurrentUser(user)
         connection = await getConnectionManagerXgrow().connect(websocket=websocket, xgrowKey=xgrowKey)
 
-        print(uName, user.name, userName, xgrowKey)
 
         try:
             while True:

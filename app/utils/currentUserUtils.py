@@ -20,7 +20,15 @@ class userUtils():
             return currentUser.name
 
     @staticmethod
-    async def getUserNameForCurrentUser(currentUser: schemas.User):
+    async def getAsyncUserNameForCurrentUser(currentUser: schemas.User):
+        '''Return userName by currentUser schema'''
+        if currentUser.userType:
+            return currentUser.name
+        else:
+            return currentUser.xgrowKey
+
+    @staticmethod
+    def getUserNameForCurrentUser(currentUser: schemas.User):
         '''Return userName by currentUser schema'''
         if currentUser.userType:
             return currentUser.name

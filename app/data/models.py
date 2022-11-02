@@ -139,7 +139,7 @@ class XgrowKeys(Base):
     #device Section
     ban = Column(Boolean)
     reason = Column(String)
-    abonament = Column(Integer)
+    subscription = Column(Integer)
 
 
 

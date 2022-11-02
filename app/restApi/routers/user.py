@@ -1,6 +1,6 @@
 from app.data import database
 from app.security import oauth2
-from app.schemas import schemas
+from app.schemas import schemas, schemasXgrowKeys
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends
 from app.restApi.repository import user
@@ -21,6 +21,6 @@ def create_user(request: schemas.User, db: Session = Depends(dataBase)):
 def get_user(id: int, db: Session = Depends(dataBase)):
     return user.show(id, db)
 
-@router.post('/getdevice', response_model=schemas.User)
+@router.get('/getdevice/', response_model=schemasXgrowKeys.XgrowKeyToShow)
 def getDeviceData(db: Session = Depends(dataBase), current_user: schemas.User = Depends(oauth2.getCurrentUser)):
-    return user.getDeviceData(current_user, db)
+    return user.getXgrowDevice(current_user, db)

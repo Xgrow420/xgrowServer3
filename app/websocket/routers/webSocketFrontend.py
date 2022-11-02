@@ -42,7 +42,6 @@ async def webSocketFrontend(websocket: WebSocket, csrf_token: str = "", client_i
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
         connection = await getConnectionManagerFrontend().connect(websocket=websocket, userName=userName)
 
-        print(f"ws Front {userName}, {xgrowKey}")
 
         try:
             while True:
