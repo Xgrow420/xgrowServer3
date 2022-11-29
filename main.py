@@ -6,7 +6,7 @@ from app.data import models
 from app.data.postgresSQLconnection.connect_connector import connect_with_connector
 from app.data.postgresSQLconnection.standard import standard_connect
 from app.restApi.routers import customDevice, endpointUtils, pot, user, authentication, preferences, \
-    airSensorTrigger, logs, sensors
+    airSensorTrigger, logs, sensors, subscription
 from app.restApi.routers import timerTrigger, air, fan
 from app.websocket.repository.connectionManagerFrontend import ConnectionFrontend, getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow, ConnectionXgrow
@@ -20,6 +20,16 @@ localHost = False
 
 app = FastAPI()
 
+origins = ["http://app.xgrow.pl", "http://app.xgrow.pl/", "http://app.xgrow.pl:4200", "http://app.xgrow.pl:8000", "http://app.xgrow.pl:8000",
+           "http://app.xgrow.pl:4200", "http://app.xgrow.pl:4200", "https://app.xgrow.pl/", "https://app.xgrow.pl/"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #models.Base.metadata.create_all(standard_connect())
 models.Base.metadata.create_all(connect_with_connector())
@@ -42,8 +52,9 @@ app.include_router(endpointUtils.router)
 app.include_router(webSocketXgrow.router)
 app.include_router(airSensorTrigger.router)
 app.include_router(webSocketFrontend.router)
+app.include_router(subscription.router)
 
-
+#DEPRECATED
 @app.get('/api/status')
 async def get_status():
     count1 = 0

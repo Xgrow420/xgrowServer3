@@ -1,5 +1,8 @@
-from app.schemas import schemas
+from datetime import datetime
 
+from app.data import models
+from app.schemas import schemas, schemasXgrowKeys
+from sqlalchemy.orm import Session, Query
 
 class userUtils():
 
@@ -42,3 +45,19 @@ class userUtils():
             return currentUser.name
         else:
             return currentUser.xgrowKey
+
+    @staticmethod
+    async def asyncUserHaveSubscription(xgrowKey, db : Session):
+        userXgrowKeys: schemasXgrowKeys.XgrowKey = db.query(models.XgrowKeys).filter(models.XgrowKeys.xgrowKey == xgrowKey).first()
+        if userXgrowKeys.subscription < datetime.timestamp(datetime.now()):
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def userHaveSubscription(xgrowKey, db : Session):
+        userXgrowKeys: schemasXgrowKeys.XgrowKey = db.query(models.XgrowKeys).filter(models.XgrowKeys.xgrowKey == xgrowKey).first()
+        if userXgrowKeys.subscription < datetime.timestamp(datetime.now()):
+            return False
+        else:
+            return True

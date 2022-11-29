@@ -38,8 +38,13 @@ async def webSocketFrontend(websocket: WebSocket, csrf_token: str = "", client_i
     try:
         Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf_token)
         userName = Authorize.get_jwt_subject()
-        user: schemas.User = await stringUtils.getUserSchemaFromName(userName, db)
+        user: schemas.User = await stringUtils.asyncGetUserSchemaFromName(userName, db)
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
+
+        # check subscriptions
+        if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
+            return False
+
         connection = await getConnectionManagerFrontend().connect(websocket=websocket, userName=userName)
 
 

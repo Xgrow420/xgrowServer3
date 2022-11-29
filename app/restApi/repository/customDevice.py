@@ -12,6 +12,10 @@ from app.websocket.repository.commandManager import getCommandManager
 
 def getCustomDevices(currentUser: schemas.User, _deviceType: str, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.userHaveSubscription(xgrowKey,db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     devices: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                           models.CustomDevice.deviceType == _deviceType).all()
 
@@ -20,6 +24,10 @@ def getCustomDevices(currentUser: schemas.User, _deviceType: str, db: Session):
 
 def getCustomDevice(db: Session, index: int, _deviceType: str, currentUser: schemas.User):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.userHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                          models.CustomDevice.deviceType == _deviceType,
                                                          models.CustomDevice.index == index).first()
@@ -34,6 +42,10 @@ def getCustomDevice(db: Session, index: int, _deviceType: str, currentUser: sche
 
 async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.asyncUserHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     device: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                          models.CustomDevice.deviceType == request.deviceType,
@@ -85,6 +97,10 @@ async def createCustomDevice(db: Session, request: schemasCustomDevice.CustomDev
 
 async def updateCustomDevice(db: Session, request: schemasCustomDevice.CustomDeviceToModify, currentUser: schemas.User):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.asyncUserHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     customDevice: Query = db.query(models.CustomDevice).filter(models.CustomDevice.xgrowKey == xgrowKey,
                                                                models.CustomDevice.deviceType == request.deviceType,

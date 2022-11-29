@@ -50,9 +50,9 @@ class ConnectionManagerXgrow:
     async def connect(self, websocket: WebSocket, xgrowKey: str):
         for connect in self.active_connections:
             if connect.getXgrowKey() == xgrowKey:
+                self.active_connections.remove(connect)
                 await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {xgrowKey}")
                 #FIXME: Value Error for list
-                self.active_connections.remove(connect)
 
         connection = ConnectionXgrow(websocket=websocket, xgrowKey=xgrowKey)
         self.active_connections.append(connection)

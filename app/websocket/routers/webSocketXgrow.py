@@ -90,9 +90,14 @@ async def webSocketXgrow(websocket: WebSocket, csrf_token: str = "", client_id: 
     try:
         Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf_token)
         uName = Authorize.get_jwt_subject()
-        user: schemas.User = await stringUtils.getUserSchemaFromName(uName, db)
+        user: schemas.User = await stringUtils.asyncGetUserSchemaFromName(uName, db)
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
         userName = await userUtils.asyncGetUserNameForCurrentUser(user)
+
+        #check subscriptions
+        if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
+            return False
+
         connection = await getConnectionManagerXgrow().connect(websocket=websocket, xgrowKey=xgrowKey)
 
 

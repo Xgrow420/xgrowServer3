@@ -131,6 +131,8 @@ class AirSensorTrigger(Base):
     linkedDevice = relationship('CustomDevice', back_populates="airSensorTrigger")
     #end
 
+# tabela xgrowkeys jest wpisywana recznie i definiuje klucz xgrow ktory moze polaczyc sie z serwisem, jesli
+#klucz nie znajduje sie w bazie to urzadzenie sie nie polaczy z serwerem !
 class XgrowKeys(Base):
     __tablename__ = 'xgrowKeys'
 
@@ -140,6 +142,16 @@ class XgrowKeys(Base):
     ban = Column(Boolean)
     reason = Column(String)
     subscription = Column(Integer)
+
+#tabela SubscriptionKeys jest wpisywana recznie i zawiera kody do przedluzania subskrypcji
+class SubscriptionKeys(Base):
+
+    __tablename__ = 'subscriptionKeys'
+
+    id = Column(Integer, primary_key=True, index=True)
+    subscriptionKey = Column(String)
+    days = Column(Integer)
+    released = Column(Boolean)
 
 
 

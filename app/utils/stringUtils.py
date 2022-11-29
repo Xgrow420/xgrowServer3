@@ -27,7 +27,11 @@ def convertStringToList(string: str):
 
 
 
-async def getUserSchemaFromName(userName, db: Session):
+def getUserSchemaFromName(userName, db: Session):
+    user: schemas.User = db.query(models.User).filter(models.User.name == userName).first()
+    return user
+
+async def asyncGetUserSchemaFromName(userName, db: Session):
 
     user: schemas.User = db.query(models.User).filter(models.User.name == userName).first()
     return user
