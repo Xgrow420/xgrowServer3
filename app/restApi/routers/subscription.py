@@ -17,5 +17,4 @@ dataBase = database.getDataBase
 
 @router.post('/{key}', status_code=status.HTTP_202_ACCEPTED)
 def send_subscriptionKey(key: str, current_user: schemas.User = Depends(oauth2.getCurrentUser), db: Session = Depends(dataBase)):
-    print("hit send_subscriptionKey endpoint!")
     return subscription.subscriptionKey(current_user, key, db)

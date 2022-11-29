@@ -8,7 +8,6 @@ from app.utils.currentUserUtils import userUtils
 
 
 def subscriptionKey(currentUser: schemas.User, key: str, db: Session):
-    print(f"sended key: {key}")
 
     subscriptionKey: Query = db.query(models.SubscriptionKeys).filter(models.SubscriptionKeys.subscriptionKey == key).first()
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
@@ -31,6 +30,8 @@ def subscriptionKey(currentUser: schemas.User, key: str, db: Session):
 
                 db.query(models.SubscriptionKeys).filter(models.SubscriptionKeys.subscriptionKey == key).delete(synchronize_session=False)
                 db.commit()
+                return userXgrowKeys.subscription
+
             else:
                 raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
                                 detail=f"Fatal Error user does not exist in xgrowKeys db plz contact with administration")
