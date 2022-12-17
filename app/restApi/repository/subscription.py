@@ -16,29 +16,33 @@ def subscriptionKey(currentUser: schemas.User, key: str, db: Session):
         userXgrowKeys: schemasXgrowKeys.XgrowKey = db.query(models.XgrowKeys).filter(models.XgrowKeys.xgrowKey == xgrowKey).first()
         if subscriptionKey:
             if userXgrowKeys:
+                days = subscriptionKey.days
                 if userXgrowKeys.subscription < datetime.timestamp(datetime.now()):
                     subscriptionTime = datetime.now()
-                    subscriptionTime += timedelta(days=subscriptionKey.days)
+                    subscriptionTime += timedelta(days=days)
 
                     userXgrowKeys.subscription = int(datetime.timestamp(subscriptionTime))
 
                 else:
                     subscriptionTime = datetime.fromtimestamp(userXgrowKeys.subscription)
-                    subscriptionTime += timedelta(days=subscriptionKey.days)
+                    subscriptionTime += timedelta(days=days)
 
                     userXgrowKeys.subscription = int(datetime.timestamp(subscriptionTime))
 
                 db.query(models.SubscriptionKeys).filter(models.SubscriptionKeys.subscriptionKey == key).delete(synchronize_session=False)
                 db.commit()
-                return userXgrowKeys.subscription
+
+                return {"subscriptionEndTimestamp": userXgrowKeys.subscription, "extendedDays": days}
 
             else:
-                raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                                detail=f"Fatal Error user does not exist in xgrowKeys db plz contact with administration")
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"Fatal Error user does not exist in xgrowKeys db plz contact with administration",
+                                headers={"message": "Your subscription Key is not valid."})
 
         else:
-            raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                                detail=f"Your subscription Key is not valid.")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"popupMessages.invalidKey",
+                                headers={"message": "popupMessages.invalidKey"})
 
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

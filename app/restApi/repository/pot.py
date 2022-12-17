@@ -5,20 +5,26 @@ from app.schemas import schemas, schemasPot
 from fastapi import HTTPException, status
 
 from app.websocket.repository.commandManager import getCommandManager
-from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
-from app.websocket.routers.webSocketXgrow import getConnectionManagerXgrow
 
 from app.utils.currentUserUtils import userUtils
 
 
 def getPots(currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.userHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     pots: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey).all()
     return pots
 
 
 def getPot(index: int, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.userHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                              models.Pot.index == index).first()
     if not pot:
@@ -31,6 +37,10 @@ def getPot(index: int, currentUser: schemas.User, db: Session):
 
 async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.asyncUserHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                              models.Pot.index == request.index)
@@ -76,6 +86,10 @@ async def createPot(request: schemasPot.PotToModify, currentUser: schemas.User, 
 
 async def updatePot(request: schemasPot.PotToModify, currentUser: schemas.User, db: Session):
     xgrowKey = await userUtils.asyncGetXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.asyncUserHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     userName = await userUtils.asyncGetUserNameForCurrentUser(currentUser)
     pot: Query = db.query(models.Pot).filter(models.Pot.xgrowKey == xgrowKey,
                                              models.Pot.index == request.index)

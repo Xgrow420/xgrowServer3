@@ -10,12 +10,20 @@ from app.utils.currentUserUtils import userUtils
 
 def getLogs(currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.userHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == xgrowKey).first()
     return logs
 
 
 def createLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.userHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == xgrowKey)
 
     if not logs.first():
@@ -44,6 +52,10 @@ def createLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db:
 
 def updateLogs(request: schemasLogs.LogsToModify, currentUser: schemas.User, db: Session):
     xgrowKey = userUtils.getXgrowKeyForCurrentUser(currentUser)
+    if not userUtils.userHaveSubscription(xgrowKey, db):
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                            detail="please pay for the subscription, contact the administration to renew in case of emergency")
+
     logs: Query = db.query(models.Logs).filter(models.Logs.xgrowKey == xgrowKey)
 
     if not logs.first():

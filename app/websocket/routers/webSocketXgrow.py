@@ -96,6 +96,8 @@ async def webSocketXgrow(websocket: WebSocket, csrf_token: str = "", client_id: 
 
         #check subscriptions
         if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
+            await websocket.send_text("[Server] Please pay for the subscription, contact the administration to renew in case of emergency")
+            await websocket.close()
             return False
 
         connection = await getConnectionManagerXgrow().connect(websocket=websocket, xgrowKey=xgrowKey)
