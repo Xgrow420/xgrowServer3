@@ -50,10 +50,9 @@ class ConnectionManagerXgrow:
     async def connect(self, websocket: WebSocket, xgrowKey: str):
         for connect in self.active_connections:
             if connect.getXgrowKey() == xgrowKey:
-                #TODO: sprawdz if connect is not None: czy generuje jeszcze błąd w konsoli z remove item z listy
-                if connect is not None:
-                    self.active_connections.remove(connect)
                 await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {xgrowKey}")
+                if connect in self.active_connections:
+                    self.active_connections.remove(connect)
 
         connection = ConnectionXgrow(websocket=websocket, xgrowKey=xgrowKey)
         self.active_connections.append(connection)
