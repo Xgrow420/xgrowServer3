@@ -6,7 +6,7 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from sqlalchemy.orm import Session
 
-from app.schemas import schemas, schemasPot
+from app.schemas import schemas
 from app.data import database
 from app.schemas.schemas import Settings
 from app.utils.currentUserUtils import userUtils

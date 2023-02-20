@@ -5,9 +5,8 @@ from starlette.middleware.cors import CORSMiddleware
 from app.data import models
 from app.data.postgresSQLconnection.connect_connector import connect_with_connector
 from app.data.postgresSQLconnection.standard import standard_connect
-from app.restApi.routers import customDevice, endpointUtils, pot, user, authentication, preferences, \
-    airSensorTrigger, logs, sensors, subscription
-from app.restApi.routers import timerTrigger, air, fan
+from app.restApi.routers import endpointUtils, user, authentication, subscription
+
 from app.websocket.repository.connectionManagerFrontend import ConnectionFrontend, getConnectionManagerFrontend
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow, ConnectionXgrow
 from app.websocket.routers import webSocketXgrow, webSocketFrontend
@@ -39,18 +38,9 @@ models.Base.metadata.create_all(connect_with_connector())
     for localhost use: standard_connect()
 '''
 app.include_router(authentication.router)
-app.include_router(preferences.router)
-app.include_router(logs.router)
-app.include_router(sensors.router)
 app.include_router(user.router)
-app.include_router(pot.router)
-app.include_router(fan.router)
-app.include_router(air.router)
-app.include_router(customDevice.router)
-app.include_router(timerTrigger.router)
 app.include_router(endpointUtils.router)
 app.include_router(webSocketXgrow.router)
-app.include_router(airSensorTrigger.router)
 app.include_router(webSocketFrontend.router)
 app.include_router(subscription.router)
 
