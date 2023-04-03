@@ -24,15 +24,30 @@ origins = [
     "http://localhost:4200",
     "http://localhost:3000",
     "http://localhost:8080",
+
     "https://xgrow.pl",
+    "https://app.xgrow.pl",
+    "https://app.xgrow.pl/",
+
     "http://app.xgrow.pl",
     "http://app.xgrow.pl/",
+
+    "http://xgrow.pl:4200",
+    "http://xgrow.pl:8000",
+    "http://xgrow.pl:3000",
+
     "http://app.xgrow.pl:4200",
     "http://app.xgrow.pl:8000",
-    "http://app.xgrow.pl:8000",
-    "http://app.xgrow.pl:4200",
-    "http://app.xgrow.pl:4200",
-    "https://app.xgrow.pl/"
+    "http://app.xgrow.pl:3000",
+
+    "https://app.xgrow.pl:4200",
+    "https://app.xgrow.pl:8000",
+    "https://app.xgrow.pl:3000",
+
+    "https://xgrow.pl:8000",
+    "https://xgrow.pl:4200",
+    "https://xgrow.pl:3000",
+
 ]
 
 app.add_middleware(
