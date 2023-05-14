@@ -26,10 +26,11 @@ class CommandManager():
             if not await getConnectionManagerXgrow().sendMessageToDevice(message=command, xgrowKey=xgrowKey):
                 await getConnectionManagerFrontend().sendMessageToDevice("[Server] Connection ERROR", userName=userName)
                 return False
-        else: # od tąd do wyjebania do 33 lini
-            command: list = command.split()
-            command: str = " ".join(command[2:])
-            await getConnectionManagerFrontend().sendMessageToDevice(command, userName=userName)
+        else: # od tąd do wyjebania do 34 lini
+            commandlist: list = command.split()
+            commandStr: str = " ".join(commandlist[1:])
+            commandX = f"xsend {commandStr}"
+            await getConnectionManagerFrontend().sendMessageToDevice(commandX, userName=userName)
 
 
 
