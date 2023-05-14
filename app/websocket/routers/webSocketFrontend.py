@@ -6,6 +6,7 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from sqlalchemy.orm import Session
 
+import main
 from app.schemas import schemas
 from app.data import database
 from app.schemas.schemas import Settings
@@ -42,10 +43,11 @@ async def webSocketFrontend(websocket: WebSocket, csrf_token: str = "", client_i
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
 
         # check subscriptions
-        if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
-            await websocket.send_text("[Server] Please pay for the subscription, contact the administration to renew in case of emergency")
-            await websocket.close()
-            return False
+        if not main.DEVELOPER_MODE:
+            if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
+                await websocket.send_text("[Server] Please pay for the subscription, contact the administration to renew in case of emergency")
+                await websocket.close()
+                return False
 
         connection = await getConnectionManagerFrontend().connect(websocket=websocket, userName=userName)
 

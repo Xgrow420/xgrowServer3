@@ -16,6 +16,7 @@ PORT = 8000
 
 localHost = False
 
+DEVELOPER_MODE = False
 
 app = FastAPI()
 
