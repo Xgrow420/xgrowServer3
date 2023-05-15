@@ -1,4 +1,4 @@
-import main
+from app import settings
 from app.websocket.repository.connectionManagerXgrow import getConnectionManagerXgrow
 from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 
@@ -22,7 +22,7 @@ class CommandManager():
 
 
     async def sendCommandToXgrow(self, command: str, xgrowKey: str, userName: str):
-        if not main.DEVELOPER_MODE: #developer mode moze byc wyjebany
+        if not settings.DEVELOPER_MODE: #developer mode moze byc wyjebany
             if not await getConnectionManagerXgrow().sendMessageToDevice(message=command, xgrowKey=xgrowKey):
                 await getConnectionManagerFrontend().sendMessageToDevice("[Server] Connection ERROR", userName=userName)
                 return False

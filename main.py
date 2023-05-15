@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from app import settings
 from app.data import models
 from app.data.postgresSQLconnection.connect_connector import connect_with_connector
 from app.data.postgresSQLconnection.standard import standard_connect
@@ -16,7 +17,6 @@ PORT = 8000
 
 localHost = False
 
-DEVELOPER_MODE = False
 
 app = FastAPI()
 
@@ -58,9 +58,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-#models.Base.metadata.create_all(standard_connect())
-models.Base.metadata.create_all(connect_with_connector())
+#if settings.DEVELOPER_MODE:
+models.Base.metadata.create_all(standard_connect())
+#else:
+#    models.Base.metadata.create_all(connect_with_connector())
 ''' 
     for deploy plz use connect_with_connector() in 
     models.Base.metadata.create_all(),

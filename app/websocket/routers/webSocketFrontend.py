@@ -1,19 +1,16 @@
-from typing import List
-
 from fastapi import WebSocket, WebSocketDisconnect, APIRouter, Depends
-from fastapi.responses import HTMLResponse
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from sqlalchemy.orm import Session
 
-import main
+from app import settings
 from app.schemas import schemas
 from app.data import database
 from app.schemas.schemas import Settings
 from app.utils.currentUserUtils import userUtils
 import app.utils.stringUtils as stringUtils
 from app.websocket.repository.commandManager import getCommandManager
-from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend, ConnectionFrontend
+from app.websocket.repository.connectionManagerFrontend import getConnectionManagerFrontend
 
 router = APIRouter(
     prefix="/api/webSocketFrontend",
@@ -43,7 +40,7 @@ async def webSocketFrontend(websocket: WebSocket, csrf_token: str = "", client_i
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
 
         # check subscriptions
-        if not main.DEVELOPER_MODE:
+        if not settings.DEVELOPER_MODE:
             if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
                 await websocket.send_text("[Server] Please pay for the subscription, contact the administration to renew in case of emergency")
                 await websocket.close()
