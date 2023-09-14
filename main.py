@@ -21,25 +21,25 @@ localHost = False
 app = FastAPI()
 
 origins = [
-    "http://localhost",
-    "http://localhost:4200",
-    "http://localhost:3000",
-    "http://localhost:8080",
+    # "http://localhost",
+    # "http://localhost:4200",
+    # "http://localhost:3000",
+    # "http://localhost:8080",
 
     "https://xgrow.pl",
     "https://app.xgrow.pl",
     "https://app.xgrow.pl/",
 
-    "http://app.xgrow.pl",
-    "http://app.xgrow.pl/",
-
-    "http://xgrow.pl:4200",
-    "http://xgrow.pl:8000",
-    "http://xgrow.pl:3000",
-
-    "http://app.xgrow.pl:4200",
-    "http://app.xgrow.pl:8000",
-    "http://app.xgrow.pl:3000",
+    # "http://app.xgrow.pl",
+    # "http://app.xgrow.pl/",
+    #
+    # "http://xgrow.pl:4200",
+    # "http://xgrow.pl:8000",
+    # "http://xgrow.pl:3000",
+    #
+    # "http://app.xgrow.pl:4200",
+    # "http://app.xgrow.pl:8000",
+    # "http://app.xgrow.pl:3000",
 
     "https://app.xgrow.pl:4200",
     "https://app.xgrow.pl:8000",
@@ -59,9 +59,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 #if settings.DEVELOPER_MODE:
-models.Base.metadata.create_all(standard_connect())
+#models.Base.metadata.create_all(standard_connect())
 #else:
-#    models.Base.metadata.create_all(connect_with_connector())
+models.Base.metadata.create_all(connect_with_connector())
 ''' 
     for deploy plz use connect_with_connector() in 
     models.Base.metadata.create_all(),

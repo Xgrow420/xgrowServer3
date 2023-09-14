@@ -119,18 +119,18 @@ async def webSocketXgrow(websocket: WebSocket, csrf_token: str = "", client_id: 
 
 
 
-'''
-                count = 0
-                xklist = []
-                for connection in getConnectionManager().active_connections:
-                    count = count + 1
-                    connection: Connection
-                    xklist.append(connection.getXgrowKey())
-                    await getConnectionManager().sendMessageToDevice(f"Pobierz Pot{connection.getXgrowKey()}",
-                                                                     connection.getXgrowKey())
-                await getConnectionManager().sendMessageToDevice(f'chuj {getConnectionManager().active_connections}, count: {count}, xkeyList: {xklist}', connection.getXgrowKey())
-
-                await getConnectionManager().send_personal_message(f"", websocket)
-                await getConnectionManager().send_personal_message(f"You wrote: {command}", websocket)
-                await getConnectionManager().send_personal_message(f"Client {xgrowKey}", websocket)
-'''
+# '''
+#                 count = 0
+#                 xklist = []
+#                 for connection in getConnectionManager().active_connections:
+#                     count = count + 1
+#                     connection: Connection
+#                     xklist.append(connection.getXgrowKey())
+#                     await getConnectionManager().sendMessageToDevice(f"Pobierz Pot{connection.getXgrowKey()}",
+#                                                                      connection.getXgrowKey())
+#                 await getConnectionManager().sendMessageToDevice(f'chuj {getConnectionManager().active_connections}, count: {count}, xkeyList: {xklist}', connection.getXgrowKey())
+#
+#                 await getConnectionManager().send_personal_message(f"", websocket)
+#                 await getConnectionManager().send_personal_message(f"You wrote: {command}", websocket)
+#                 await getConnectionManager().send_personal_message(f"Client {xgrowKey}", websocket)
+# '''

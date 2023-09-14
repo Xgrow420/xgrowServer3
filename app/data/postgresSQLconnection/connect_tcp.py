@@ -29,7 +29,7 @@ def connect_tcp_socket() -> sqlalchemy.engine.base.Engine:
     # keep secrets safe.
     db_host = "146.148.21.210"  # e.g. '127.0.0.1' ('172.17.0.1' if deployed to GAE Flex)
     db_user = "xgrowdb"  # e.g. 'my-db-user'
-    db_pass = "chuj"  # e.g. 'my-db-password'
+    db_pass = "D8mSNV7fhFvmSh3^$kND3rtDsRX!6rvHsyRXNSfmSJXY3MmtxQSTjiyY@ytFyJxQ"  # e.g. 'my-db-password'
     db_name = "xgrowdb"  # e.g. 'my-database'
     db_port = "5432"  # e.g. 5432
 

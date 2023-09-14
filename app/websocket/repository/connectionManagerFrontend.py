@@ -65,6 +65,8 @@ class ConnectionManagerFrontend:
                 #await connection.getWebSocket().close(1000, "connection close")
                 print(f"{connection.getUserName()} disconnected")
                 self.active_connections.remove(connection)
+                # TODO dodana linia 69 zamykanie ws sprawdz czy dziala
+                #await connection.getWebSocket().close(1000)
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
@@ -78,6 +80,8 @@ class ConnectionManagerFrontend:
                 except RuntimeError:
                     print(f"webSocket: {connection.getWebSocket()} does not exist i will deleting it...")
                     self.active_connections.remove(connection)
+                    #TODO dodana linia 83 zamykanie ws sprawdz czy dziala
+                    #await connection.getWebSocket().close(1000)
                     return False
 
     async def broadcast(self, message: str):

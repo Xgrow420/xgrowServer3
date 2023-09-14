@@ -40,11 +40,11 @@ async def webSocketFrontend(websocket: WebSocket, csrf_token: str = "", client_i
         xgrowKey: str = await userUtils.asyncGetXgrowKeyForCurrentUser(user)
 
         # check subscriptions
-        if not settings.DEVELOPER_MODE:
-            if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
-                await websocket.send_text("[Server] Please pay for the subscription, contact the administration to renew in case of emergency")
-                await websocket.close()
-                return False
+        #if not settings.DEVELOPER_MODE:
+        if not await userUtils.asyncUserHaveSubscription(xgrowKey, db):
+            await websocket.send_text("[Server] Please pay for the subscription, contact the administration to renew in case of emergency")
+            await websocket.close()
+            return False
 
         connection = await getConnectionManagerFrontend().connect(websocket=websocket, userName=userName)
 

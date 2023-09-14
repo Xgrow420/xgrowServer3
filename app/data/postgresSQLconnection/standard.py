@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 SQLALCHEMY_DATABASE_URI = PostgresDsn.build(
     scheme="postgresql",
     user="xgrowdb",
-    password="chuj",
+    password="D8mSNV7fhFvmSh3^$kND3rtDsRX!6rvHsyRXNSfmSJXY3MmtxQSTjiyY@ytFyJxQ",
     host="146.148.21.210",
     path=f"/{'xgrowdb' or ''}",
 )

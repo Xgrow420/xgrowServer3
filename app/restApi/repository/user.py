@@ -1,3 +1,4 @@
+from typing import List
 
 from sqlalchemy.orm import Session, Query
 from app.data import models
@@ -10,6 +11,16 @@ from app.utils.currentUserUtils import userUtils
 def createUser(request: schemas.User, db: Session):
 
     xgrowKey = db.query(models.XgrowKeys).filter(models.XgrowKeys.xgrowKey == request.xgrowKey).first()
+
+    users: List[models.User] = db.query(models.User).filter(models.User.name == request.name).all()
+
+    if users:
+        if xgrowKey:
+            for user in users:
+                if user.xgrowKey != xgrowKey.xgrowKey:
+                    raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                                        detail=f"This user name is already taken!")
+
     if xgrowKey:
         xgrowKey: schemasXgrowKeys.XgrowKey
         #print(f"xgrow key is valid! {xgrowKey.ban}, {xgrowKey.reason}")

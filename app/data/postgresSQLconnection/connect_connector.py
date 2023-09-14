@@ -32,7 +32,7 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     #"xgrow-server:europe-west1:xgrow-database"
     instance_connection_name = 'xgrow-server:europe-west1:xgrow-ecodb'  # e.g. 'project:region:instance'
     db_user = 'xgrowdb'  # e.g. 'my-db-user'
-    db_pass = 'chuj' # e.g. 'my-db-password'
+    db_pass = 'D8mSNV7fhFvmSh3^$kND3rtDsRX!6rvHsyRXNSfmSJXY3MmtxQSTjiyY@ytFyJxQ' # e.g. 'my-db-password'
     db_name = 'xgrowdb'  # e.g. 'my-database'
 
     ip_type = IPTypes.PRIVATE if os.environ.get("PRIVATE_IP") else IPTypes.PUBLIC
