@@ -1,3 +1,4 @@
+import traceback
 from typing import List
 
 from fastapi import WebSocket
@@ -50,8 +51,12 @@ class ConnectionManagerFrontend:
     async def connect(self, websocket: WebSocket, userName: str):
         for connect in self.active_connections:
             if connect.getUserName() == userName:
-                await connect.getWebSocket().send_text(f"[Server] New webSocket connection was raised for: {userName}")
-                await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {userName}")
+                try:
+                    print(f"[!] New webSocket connection was raised for: {userName}")
+                    #await connect.getWebSocket().send_text(f"[Server] New webSocket connection was raised for: {userName}")
+                    await connect.getWebSocket().close(1000, f"[!] New webSocket connection was raised for: {userName}")
+                except Exception as e:
+                    print(e)
                 if connect in self.active_connections:
                     self.active_connections.remove(connect)
 
